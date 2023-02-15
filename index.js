@@ -1,0 +1,1 @@
+exports.withPayload = require('./withPayload')
