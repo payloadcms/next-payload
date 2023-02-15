@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/payloadcms/next-payload.git"
   },
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "bin": {
     "next-payload": "bin.js"
   },
