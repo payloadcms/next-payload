@@ -24,9 +24,9 @@
     "next-payload": "bin.js"
   },
   "files": [
-    "handlers",
     "middleware",
     "mocks",
+    "templates",
     "utilities",
     "*.js"
   ],
