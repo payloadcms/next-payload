@@ -1,6 +1,7 @@
+'use client'
+
 import React from 'react';
-import Index from 'payload/dist/admin'
-import Banner from 'payload/dist/admin/components/elements/Banner'
+import Root from 'payload/dist/admin/Root'
 
 const PayloadAdmin = () => {
   const [mounted, setMounted] = React.useState(false)
@@ -11,12 +12,7 @@ const PayloadAdmin = () => {
 
   if (!mounted) return null;
 
-  return (
-    <div className="wrap">
-      <Index />
-      <Banner />
-    </div>
-  )
+  return <Root />
 }
 
 export default PayloadAdmin;
