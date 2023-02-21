@@ -55,6 +55,7 @@ const withPayload = async (config, paths) => {
     },
     transpilePackages: [
       ...config.transpilePackages || [],
+      '@payloadcms/next-payload',
       'payload',
       'mongoose'
     ]

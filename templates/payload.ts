@@ -1,4 +1,4 @@
-import { getPayload } from 'payload';
+import { getPayload } from "payload/dist/payload";
 import config from './payload/payload.config';
 
 const getInitializedPayload = async () => {
