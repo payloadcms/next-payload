@@ -1,14 +1,9 @@
-import { serialize } from 'cookie'
-
-type CookieOptions = {
-  expires?: Date
-  maxAge?: number
-}
+const { serialize } = require('cookie')
 
 /**
  * This sets `cookie` on `res` object
  */
-const cookie = (res, name, value, options: CookieOptions = {}) => {
+const cookie = (res, name, value, options = {}) => {
   const stringValue =
     typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value)
 
@@ -36,4 +31,4 @@ const cookies = (handler) => (req, res) => {
   return handler(req, res)
 }
 
-export default cookies
+module.exports = cookies

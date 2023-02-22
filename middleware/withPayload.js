@@ -1,8 +1,8 @@
-import getPayload from '@payloadcms/next-payload/getPayload';
+const getPayload = require('@payloadcms/next-payload/getPayload')
 
 const withPayload = (handler) => async (req, res) => {
   req.payload = await getPayload()
   handler(req, res)
 }
 
-export default withPayload
+module.exports = withPayload

@@ -1,6 +1,6 @@
-import passport from 'passport'
-import jwtStrategy from 'payload/dist/auth/strategies/jwt'
-import AnonymousStrategy from 'passport-anonymous'
+const passport = require('passport')
+const jwtStrategy = require('payload/dist/auth/strategies/jwt')
+const AnonymousStrategy = require('passport-anonymous')
 
 const initializePassport = (handler) => (req, res) => {
   passport.use(new AnonymousStrategy.Strategy())
@@ -11,4 +11,4 @@ const initializePassport = (handler) => (req, res) => {
   )
 }
 
-export default initializePassport
+module.exports = initializePassport

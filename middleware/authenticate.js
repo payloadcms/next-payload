@@ -1,4 +1,4 @@
-import authenticate from 'payload/dist/express/middleware/authenticate'
+const authenticate = require('payload/dist/express/middleware/authenticate').default
 
 const authMiddleware = (handler) => (req, res) => {
   // Need to backfill req.get -
@@ -10,4 +10,4 @@ const authMiddleware = (handler) => (req, res) => {
   )
 }
 
-export default authMiddleware
+module.exports = authMiddleware

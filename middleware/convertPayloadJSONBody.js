@@ -12,4 +12,4 @@ const convertPayloadJSONBody = (handler) => (req, res) => {
   handler(req, res)
 }
 
-export default convertPayloadJSONBody
+module.exports = convertPayloadJSONBody

@@ -1,4 +1,4 @@
-import { i18nMiddleware } from 'payload/dist/express/middleware/i18n'
+const { i18nMiddleware } = require('payload/dist/express/middleware/i18n')
 
 const withI18N = (handler) => (req, res) => {
   i18nMiddleware(req.payload.config.i18n)(req, res, () =>
@@ -6,4 +6,4 @@ const withI18N = (handler) => (req, res) => {
   )
 }
 
-export default withI18N
+module.exports = withI18N
