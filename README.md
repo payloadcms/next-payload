@@ -41,32 +41,48 @@ You'll notice that we are initializing Payload and passing it our Payload config
 
 A great side-effect of having this file located centrally at the root of your project is that you can now import it directly, elsewhere, to leverage the [Payload Local API](https://payloadcms.com/docs/local-api/overview#local-api). The Local API does not use REST or GraphQL, and runs directly on your server talking directly to your database, which saves massively on HTTP-induced latency.
 
-Here's an example of using the Local API within `getStaticProps`:
+Here's an example of using the Local API within an `/app/[slug]/page.tsx` file::
 
 ```ts
-// Your newly created `payload.ts file
-import getPayload from "../payload";
+import React from 'react';
+import { notFound } from 'next/navigation'
+import getPayload from '../../../payload';
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+const Page = async ({ params: { slug } }) => {
   const payload = await getPayload();
 
-  const query = await payload.find({
-    collection: "pages",
+  const pages = await payload.find({
+    collection: 'pages',
     where: {
       slug: {
-        equals: params.slug,
+        equals: slug || 'home',
       },
-    },
+    }
   });
 
   const page = pages.docs[0];
 
-  return {
-    props: {
-      page: page,
-    },
-  };
-};
+  if (!page) return notFound()
+
+  return (
+    <h1>
+      Hello, this is the "{page.slug}" page!
+    </h1>
+  )
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload();
+
+  const pages = await payload.find({
+    collection: 'pages',
+    limit: 0,
+  })
+
+  return pages.docs.map(({ slug }) => ({ slug }))
+}
+
+export default Page;
 ```
 
 #### 3. Install `withPayload`
