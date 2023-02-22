@@ -1,5 +1,5 @@
 const passport = require('passport')
-const jwtStrategy = require('payload/dist/auth/strategies/jwt')
+const jwtStrategy = require('payload/dist/auth/strategies/jwt').default
 const AnonymousStrategy = require('passport-anonymous')
 
 const initializePassport = (handler) => (req, res) => {
