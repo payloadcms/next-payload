@@ -1,4 +1,4 @@
-const getPayload = require('@payloadcms/next-payload/getPayload')
+const getPayload = require('@payloadcms/next-payload/getPayload').default
 
 const withPayload = (handler) => async (req, res) => {
   req.payload = await getPayload()
