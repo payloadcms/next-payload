@@ -1,65 +1,100 @@
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-const path = require('path');
-const loadPayloadConfig = require('./loadPayloadConfig');
-const mockModulePath = path.resolve(__dirname, './mocks/emptyModule.js');
-const customCSSMockPath = path.resolve(__dirname, './mocks/custom.css'); 
+const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const path = require("path");
+const loadPayloadConfig = require("./loadPayloadConfig");
+const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
+const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
   const { configPath, cssPath, payloadPath } = paths;
 
   const payloadConfig = await loadPayloadConfig(configPath);
 
+  const configRequiresSharp = payloadConfig.collections.find(({ upload }) => {
+    if (typeof upload === "object" && upload !== null) {
+      if (upload.imageSizes || upload.resizeOptions || upload.formatOptions) {
+        return true;
+      }
+    }
+    return false;
+  });
+
+  const outputFileTracingExcludes = {
+    "**/*": [
+      "node_modules/@swc/core-linux-x64-gnu",
+      "node_modules/@swc/core-linux-x64-musl",
+      "node_modules/@swc/wasm",
+      "node_modules/webpack/**/*",
+      ...(config.experimental &&
+      config.experimental.outputFileTracingExcludes &&
+      config.experimental.outputFileTracingExcludes["**/*"]
+        ? config.experimental.outputFileTracingExcludes["**/*"]
+        : []),
+    ],
+    ...(config.experimental && config.experimental.outputFileTracingExcludes
+      ? config.experimental.outputFileTracingExcludes
+      : {}),
+  };
+
+  if (!configRequiresSharp) {
+    outputFileTracingExcludes["**/*"].push("node_modules/sharp/**/*");
+  }
+
   return {
     ...config,
     experimental: {
       ...config.experimental,
       appDir: true,
+      outputFileTracingExcludes,
     },
     webpack: (webpackConfig, webpackOptions) => {
-      const incomingWebpackConfig = typeof config.webpack === 'function' ? config.webpack(webpackConfig, webpackOptions) : webpackConfig;
+      const incomingWebpackConfig =
+        typeof config.webpack === "function"
+          ? config.webpack(webpackConfig, webpackOptions)
+          : webpackConfig;
 
       incomingWebpackConfig.module.rules.push({
         oneOf: [
           {
             test: /\.(?:ico|gif|png|jpg|jpeg|woff(2)?|eot|ttf|otf|svg)$/i,
-            type: 'asset/resource',
+            type: "asset/resource",
           },
         ],
-      })
+      });
 
       let newWebpackConfig = {
         ...incomingWebpackConfig,
         plugins: [
-          ...incomingWebpackConfig.plugins || [],
+          ...(incomingWebpackConfig.plugins || []),
           new FilterWarningsPlugin({
-            exclude: [/Critical dependency/, /require.extensions/]
-          })
+            exclude: [/Critical dependency/, /require.extensions/],
+          }),
         ],
         resolve: {
           ...incomingWebpackConfig.resolve,
           alias: {
             ...incomingWebpackConfig.resolve.alias,
-            '@payloadcms/next-payload/getPayload': payloadPath || path.resolve(process.cwd(), './payload.ts'),
-            'payload-config': configPath,
+            "@payloadcms/next-payload/getPayload":
+              payloadPath || path.resolve(process.cwd(), "./payload.ts"),
+            "payload-config": configPath,
             payload$: mockModulePath,
-            'payload-user-css': cssPath || customCSSMockPath,
-          }
-        }
-      }
+            "payload-user-css": cssPath || customCSSMockPath,
+          },
+        },
+      };
 
-      if (typeof payloadConfig.admin.webpack === 'function') {
+      if (typeof payloadConfig.admin.webpack === "function") {
         return payloadConfig.admin.webpack(newWebpackConfig);
       }
 
       return newWebpackConfig;
     },
     transpilePackages: [
-      ...config.transpilePackages || [],
-      '@payloadcms/next-payload',
-      'payload',
-      'mongoose'
-    ]
-  }
-}
+      ...(config.transpilePackages || []),
+      "@payloadcms/next-payload",
+      "payload",
+      "mongoose",
+    ],
+  };
+};
 
-module.exports = withPayload
+module.exports = withPayload;
