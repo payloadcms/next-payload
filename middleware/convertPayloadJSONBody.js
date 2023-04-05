@@ -1,15 +1,15 @@
 const convertPayloadJSONBody = (handler) => (req, res) => {
   if (req.body && req.body._payload) {
-    const payloadJSON = JSON.parse(req.body._payload)
+    const payloadJSON = JSON.parse(req.body._payload);
     req.body = {
       ...req.body,
-      ...payloadJSON
-    }
+      ...payloadJSON,
+    };
 
-    delete req.body._payload
+    delete req.body._payload;
   }
 
-  handler(req, res)
-}
+  return handler(req, res);
+};
 
-module.exports = convertPayloadJSONBody
+module.exports = convertPayloadJSONBody;
