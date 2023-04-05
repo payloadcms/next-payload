@@ -13,3 +13,9 @@ async function handler(req, res) {
 export default withPayload(
   handler
 )
+
+export const config = {
+  api: {
+    externalResolver: true
+  }
+}
