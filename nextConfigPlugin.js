@@ -78,6 +78,7 @@ const withPayload = async (config, paths) => {
             "payload-config": configPath,
             payload$: mockModulePath,
             "payload-user-css": cssPath || customCSSMockPath,
+            sharp: mockModulePath,
           },
         },
       };
