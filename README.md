@@ -1,7 +1,5 @@
 # Next + Payload Serverless
 
-> Warning - this package is in active development and is likely to change until it hits version 1.0.0. You should expect breaking changes and bugs if you attempt to use it right now.
-
 This package contains a set of utilities to allow Payload to be deployed seamlessly, serverless, within an existing NextJS project. It adds the Payload admin UI into the NextJS `/app` folder and adds all Payload endpoints into the `pages/api` folder.
 
 To do so, this package exposes a few different helpers. To get started, follow the steps below:
