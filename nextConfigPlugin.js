@@ -95,6 +95,31 @@ const withPayload = async (config, paths) => {
       "payload",
       "mongoose",
     ],
+    rewrites: async () => {
+      let userRewrites = config.rewrites;
+
+      if (typeof config.rewrites === "function") {
+        userRewrites = await config.rewrites();
+      }
+
+      const payloadAdminRewrite = {
+        source: "/admin/:path*",
+        destination: "/admin",
+      };
+
+      if (Array.isArray(userRewrites)) {
+        return [...userRewrites, payloadAdminRewrite];
+      }
+
+      if (userRewrites) {
+        return {
+          ...userRewrites,
+          afterFiles: [...(userRewrites.afterFiles || []), payloadAdminRewrite],
+        };
+      }
+
+      return [payloadAdminRewrite];
+    },
   };
 };
 
