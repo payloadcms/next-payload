@@ -34,14 +34,16 @@ module.exports = withPayload({
 
 #### 4. Ensure that the newly created `./payload.ts` file has accurate variables
 
-This is a helper file that will allow you to initialize Payload, and then share it across all of your endpoints which is good for warm serverless functions and reusability. Create a file at the root of your project called `payload.ts`, with the following contents:
+This is a helper file that will allow you to initialize Payload, and then share it across all of your endpoints which is good for warm serverless functions and reusability. Create a file at the root of your project called `getPayload.ts`, with the following contents:
 
 ```ts
+// getPayload.ts
+
 import { getPayload } from "payload";
 import config from "./payload/payload.config";
 
-const getInitializedPayload = async () => {
-  return getPayload({
+const getPayload = async () => {
+  return getPayloadLocal({
     // Make sure that your environment variables are filled out accordingly
     mongoURL: process.env.MONGODB_URI as string,
     secret: process.env.PAYLOAD_SECRET as string,
@@ -61,9 +63,9 @@ In step 4 above, we are initializing Payload and passing it our Payload config. 
 
 A great side-effect of having this file located centrally at the root of your project is that you can now import it directly, elsewhere, to leverage the [Payload Local API](https://payloadcms.com/docs/local-api/overview#local-api). The Local API does not use REST or GraphQL, and runs directly on your server talking directly to your database, which saves massively on HTTP-induced latency.
 
-Here's an example of using the Local API within an `/app/[slug]/page.tsx` file:
-
 ```ts
+// app/[slug]/page.tsx
+
 import React from "react";
 import { notFound } from "next/navigation";
 import getPayload from "../../../payload";
