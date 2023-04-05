@@ -13,9 +13,9 @@ yarn add @payloadcms/next-payload
 #### 2. Install next-payload
 
 ```bash
-npm run install:payload
+npm run next-payload install
 # or
-yarn install:payload
+yarn next-payload install
 ```
 
 #### 3. Install `withPayload`
