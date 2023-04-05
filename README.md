@@ -3,14 +3,14 @@ This package contains a set of utilities to allow Payload to be deployed seamles
 
 To do so, this package exposes a few different helpers. To get started, follow the steps below:
 
-#### 1. Install the package
+#### 1. Add this package and Payload to your project
 ```bash
-npm install @payloadcms/next-payload
+npm install @payloadcms/next-payload payload
 # or
-yarn add @payloadcms/next-payload
+yarn add @payloadcms/next-payload payload
 ```
 
-#### 2. Install next-payload
+#### 2. Run the command to extend your Next app with Payload
 
 ```bash
 npm run next-payload install
@@ -18,9 +18,9 @@ npm run next-payload install
 yarn next-payload install
 ```
 
-#### 3. Install `withPayload`
+#### 3. Add `withPayload` to your `next.config`
 
-Wrap your Next config with `withPayload`. Payload needs to inject some requirements into your Next config in order to function properly. To install `withPayload`, you need to import it into your `next.config.js` file. Here's an example:
+Payload needs to inject some requirements into your Next config in order to function properly. To install `withPayload`, you need to import it into your `next.config.js` file. Here's an example:
 
 ```ts
 // next.config.js
