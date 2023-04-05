@@ -44,42 +44,38 @@ A great side-effect of having this file located centrally at the root of your pr
 Here's an example of using the Local API within an `/app/[slug]/page.tsx` file::
 
 ```ts
-import React from 'react';
-import { notFound } from 'next/navigation'
-import getPayload from '../../../payload';
+import React from "react";
+import { notFound } from "next/navigation";
+import getPayload from "../../../payload";
 
 const Page = async ({ params: { slug } }) => {
   const payload = await getPayload();
 
   const pages = await payload.find({
-    collection: 'pages',
+    collection: "pages",
     where: {
       slug: {
-        equals: slug || 'home',
+        equals: slug || "home",
       },
-    }
+    },
   });
 
   const page = pages.docs[0];
 
-  if (!page) return notFound()
+  if (!page) return notFound();
 
-  return (
-    <h1>
-      Hello, this is the "{page.slug}" page!
-    </h1>
-  )
-}
+  return <h1>Hello, this is the "{page.slug}" page!</h1>;
+};
 
 export async function generateStaticParams() {
   const payload = await getPayload();
 
   const pages = await payload.find({
-    collection: 'pages',
+    collection: "pages",
     limit: 0,
-  })
+  });
 
-  return pages.docs.map(({ slug }) => ({ slug }))
+  return pages.docs.map(({ slug }) => ({ slug }));
 }
 
 export default Page;
@@ -98,3 +94,21 @@ module.exports = withPayload({
 ```
 
 And then you're done. Have fun!
+
+## Known gotchas
+
+#### Cold start delays
+
+With the nature of serverless functions, you are bound to encounter "cold start" delays when your serverless functions spin up for the first time. Once they're "warm", the problem will go away for a few minutes until the functions become dormant again. But there's little that this package can do about that issue, unfortunately.
+
+If you'd like to avoid cold starts with your Payload API, you can deploy on a server-based platform like [Payload Cloud](https://payloadcms.com/new) instead.
+
+#### Need to sign up for additional vendors
+
+To deploy Payload on Vercel, you'll need to configure additional vendors for the following:
+
+- Database (MongoDB Atlas)
+- File storage (AWS S3 or similar) with Payload's [Cloud Storage Plugin](https://github.com/payloadcms/plugin-cloud-storage)
+- Email service (Resend, Sendgrid)
+
+If you don't want to go out and sign up for a separate file hosting service, you can just use [Payload Cloud](https://payloadcms.com/new), which gives you file storage, a MongoDB Atlas database, email service by [Resend](https://resend.com), and lots more.
