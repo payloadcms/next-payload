@@ -1,9 +1,11 @@
 # Next + Payload Serverless
+
 This package contains a set of utilities to allow Payload to be deployed seamlessly, serverless, within an existing NextJS project. It adds the Payload admin UI into the NextJS `/app` folder and adds all Payload endpoints into the `pages/api` folder.
 
 To do so, this package exposes a few different helpers. To get started, follow the steps below:
 
 #### 1. Add this package and Payload to your project
+
 ```bash
 npm install @payloadcms/next-payload payload
 # or
@@ -26,10 +28,16 @@ Payload needs to inject some requirements into your Next config in order to func
 // next.config.js
 
 const { withPayload } = require("@payloadcms/next-payload");
+const path = require("path");
 
-module.exports = withPayload({
-  // your Next config here
-});
+module.exports = withPayload(
+  {
+    // your Next config here
+  },
+  {
+    configPath: path.resolve(__dirname, "./payload/payload.config.ts"),
+  }
+);
 ```
 
 #### 4. Ensure that the newly created `./payload.ts` file has accurate variables
