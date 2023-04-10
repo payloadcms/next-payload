@@ -13,7 +13,7 @@ yarn add @payloadcms/next-payload payload
 #### 2. Run the command to extend your Next app with Payload
 
 ```bash
-npm run next-payload install
+npx next-payload install
 # or
 yarn next-payload install
 ```
