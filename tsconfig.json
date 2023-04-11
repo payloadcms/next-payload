@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "outDir": "./dist",
+    "target": "es2019",
+    "sourceMap": true,
+    "module": "commonjs",
     "lib": [
       "dom",
       "dom.iterable",
@@ -10,22 +13,31 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "rootDir": "./",
-    "jsx": "preserve",
+    "jsx": "react",
+    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": false,
     "paths": {
       "payload/generated-types": [
         "./payload-types.ts"
       ],
       "@payloadcms/next-payload/*": [
-        "./*"
+        "./dist/*"
       ]
-    },
-    "noEmit": true
+    }
   },
+  "ts-node": {
+    "swc": true,
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ]
 }

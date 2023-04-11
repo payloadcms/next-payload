@@ -1,7 +1,7 @@
 import { getPayload } from "payload/dist/payload";
-import config from './payload/payload.config';
+import config from './payload.config';
 
-const getInitializedPayload = async () => {
+export const getInitializedPayload = async () => {
   return getPayload({
     // Make sure that your environment variables are filled out accordingly
     mongoURL: process.env.MONGODB_URI as string,

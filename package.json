@@ -21,7 +21,10 @@
   },
   "main": "./index.js",
   "bin": {
-    "next-payload": "bin.js"
+    "next-payload": "src/bin.js"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json"
   },
   "files": [
     "middleware",
