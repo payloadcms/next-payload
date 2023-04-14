@@ -68,11 +68,13 @@ export default getInitializedPayload;
 ```
 
 Your `.env` should include:
-```ts
-// .env
-
-MONGODB_URI=
-PAYLOAD_SECRET=
+```env
+# mongo connection string
+MONGODB_URI=mongodb://localhost/create-next-app-serverless
+# payload secret
+PAYLOAD_SECRET=SOME_SECRET
+# path to your payload.config file
+PAYLOAD_CONFIG_PATH=payload/payload.config.ts
 ```
 
 And then you're done. Have fun!
