@@ -67,6 +67,14 @@ const getPayload = async () => {
 export default getInitializedPayload;
 ```
 
+Your `.env` should include:
+```ts
+// .env
+
+MONGODB_URI=
+PAYLOAD_SECRET=
+```
+
 And then you're done. Have fun!
 
 ## Using the local API
