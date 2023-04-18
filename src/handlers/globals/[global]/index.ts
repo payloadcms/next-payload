@@ -58,7 +58,7 @@ async function handler(req: PayloadRequest, res: Response) {
 
         return res.status(httpStatus.OK).json({
           ...formatSuccessResponse(req.i18n.t('general:updatedSuccessfully', { label: getTranslation(globalConfig.label, req.i18n) }), 'message'),
-          global,
+          result: global,
         })
       }
     }
