@@ -9,6 +9,13 @@ if (!process.env.PAYLOAD_SECRET) {
   throw new Error('PAYLOAD_SECRET environment variable is missing')
 }
 
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections growing exponentially
+ * during API Route usage.
+ * 
+ * Source: https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.js
+ */
 let cached = (global as any).payload
 
 if (!cached) {
