@@ -13,7 +13,6 @@ import i18n from '../../../middleware/i18n'
 import fileUpload from '../../../middleware/fileUpload'
 import withDataLoader from '../../../middleware/dataLoader'
 import { isNumber } from '../../../utilities/isNumber'
-// import withQs from '../../../middleware/qsMiddleware'
 
 async function handler(req: PayloadRequest, res: Response) {
   try {
@@ -82,13 +81,11 @@ export default withPayload(
     fileUpload(
       convertPayloadJSONBody(
         i18n(
-          // withQs(
           initializePassport(
             authenticate(
               handler
             )
           )
-          // )
         )
       )
     )

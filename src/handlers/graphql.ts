@@ -9,7 +9,6 @@ import authenticate from '../middleware/authenticate'
 import initializePassport from '../middleware/initializePassport'
 import i18n from '../middleware/i18n'
 import withDataLoader from '../middleware/dataLoader'
-// import withQs from '../middleware/qsMiddleware'
 
 async function handler(req: PayloadRequest, res: Response) {
   try {
@@ -33,13 +32,11 @@ async function handler(req: PayloadRequest, res: Response) {
 export default withPayload(
   withDataLoader(
     i18n(
-      // withQs(
       initializePassport(
         authenticate(
           handler
         )
       )
-      // )
     )
   )
 )

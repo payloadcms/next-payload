@@ -16,17 +16,17 @@ module.exports = () => {
     path.resolve(process.cwd(), "./app")
   );
 
-  // Copy payload initialization
-  copyFile(
-    path.resolve(__dirname, "./templates/payload.ts"),
-    path.resolve(process.cwd(), "./payload.ts")
-  );
-
   const payloadConfigPath = path.resolve(process.cwd(), "./payload");
 
   if (!fs.existsSync(payloadConfigPath)) {
     fs.mkdirSync(payloadConfigPath);
   }
+
+  // Copy payload initialization
+  copyFile(
+    path.resolve(__dirname, "./templates/payloadClient.ts"),
+    path.resolve(process.cwd(), "./payload/payloadClient.ts")
+  );
 
   // Copy base payload config
   copyFile(
