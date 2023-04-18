@@ -24,19 +24,15 @@ if (!cached) {
 
 export const getPayloadClient = async () => {
   if (cached.client) {
-    console.log('Using cached client')
     return cached.client
   }
 
   if (!cached.promise) {
-    console.log('Creating new client')
-    cached.promise = getPayload({
+    cached.promise = await getPayload({
       // Make sure that your environment variables are filled out accordingly
       mongoURL: process.env.MONGODB_URI as string,
       secret: process.env.PAYLOAD_SECRET as string,
       config: config,
-    }).then((newClient) => {
-      return newClient
     })
   }
 
