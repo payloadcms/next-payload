@@ -1,1 +1,1 @@
-exports.withPayload = require('./nextConfigPlugin')
+exports.withPayload = require("./withPayloadPlugin");

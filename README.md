@@ -18,7 +18,17 @@ npx next-payload install
 yarn next-payload install
 ```
 
-#### 3. Add `withPayload` to your `next.config`
+#### 3. Your `.env` should include:
+```env
+# mongo connection string
+MONGODB_URI=mongodb://localhost/create-next-app-serverless
+# payload secret
+PAYLOAD_SECRET=SOME_SECRET
+# path to your payload.config file
+PAYLOAD_CONFIG_PATH=payload/payload.config.ts
+```
+
+#### 4. Add `withPayload` to your `next.config`
 
 Payload needs to inject some requirements into your Next config in order to function properly. To install `withPayload`, you need to import it into your `next.config.js` file. Here's an example:
 
@@ -40,60 +50,26 @@ module.exports = withPayload({
   cssPath: path.resolve(__dirname, './css/my-custom-payload-styles.css'),
   
   // Point to your exported, initialized Payload instance (optional, default shown below`)
-  payloadPath: path.resolve(process.cwd(), './payload.ts'),
+  payloadPath: path.resolve(process.cwd(), './payload/payloadClient.ts'),
 });
-```
-
-#### 4. Ensure that the newly created `./payload.ts` file has accurate variables
-
-This is a helper file that will allow you to initialize Payload, and then share it across all of your endpoints which is good for warm serverless functions and reusability. Create a file at the root of your project called `getPayload.ts`, with the following contents:
-
-```ts
-// getPayload.ts
-
-import { getPayload } from "payload";
-import config from "./payload/payload.config";
-
-const getPayload = async () => {
-  return getPayloadLocal({
-    // Make sure that your environment variables are filled out accordingly
-    mongoURL: process.env.MONGODB_URI as string,
-    secret: process.env.PAYLOAD_SECRET as string,
-    // Notice that we're passing our Payload config
-    config,
-  });
-};
-
-export default getInitializedPayload;
-```
-
-Your `.env` should include:
-```env
-# mongo connection string
-MONGODB_URI=mongodb://localhost/create-next-app-serverless
-# payload secret
-PAYLOAD_SECRET=SOME_SECRET
-# path to your payload.config file
-PAYLOAD_CONFIG_PATH=payload/payload.config.ts
 ```
 
 And then you're done. Have fun!
 
 ## Using the local API
 
-In step 4 above, we are initializing Payload and passing it our Payload config. [The Payload config](https://payloadcms.com/docs/configuration/overview) is central to everything that Payload does.
+The `payload/payloadClient.ts` file will be added for you after running `yarn next-payload install` (step 2). You can import `getPayloadClient` from that file from within server components to leverage the [Payloads Local API](https://payloadcms.com/docs/local-api/overview#local-api). The Local API does not use REST or GraphQL, and runs directly on your server talking directly to your database, which saves massively on HTTP-induced latency.
 
-A great side-effect of having this file located centrally at the root of your project is that you can now import it directly, elsewhere, to leverage the [Payload Local API](https://payloadcms.com/docs/local-api/overview#local-api). The Local API does not use REST or GraphQL, and runs directly on your server talking directly to your database, which saves massively on HTTP-induced latency.
-
+Here is an example:
 ```ts
 // app/[slug]/page.tsx
 
 import React from "react";
 import { notFound } from "next/navigation";
-import getPayload from "../../../payload";
+import { getPayloadClient } from "../../payload/payloadClient";
 
 const Page = async ({ params: { slug } }) => {
-  const payload = await getPayload();
+  const payload = await getPayloadClient();
 
   const pages = await payload.find({
     collection: "pages",
@@ -112,7 +88,7 @@ const Page = async ({ params: { slug } }) => {
 };
 
 export async function generateStaticParams() {
-  const payload = await getPayload();
+  const payload = await getPayloadClient();
 
   const pages = await payload.find({
     collection: "pages",
