@@ -10,12 +10,12 @@ import initializePassport from '../middleware/initializePassport'
 import i18n from '../middleware/i18n'
 import withDataLoader from '../middleware/dataLoader'
 
-async function handler(req: PayloadRequest, res: Response) {
+async function handler(req: PayloadRequest, res: Response, next) {
   try {
     req.payloadAPI = 'graphQL'
 
     if (req.method === 'POST') {
-      return graphQLHandler(req, res)(req, res)
+      return graphQLHandler(req, res)(req, res, next)
     }
 
     if (req.method === 'OPTIONS') {

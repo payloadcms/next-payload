@@ -19,6 +19,8 @@ async function handler(req: PayloadRequest, res: Response) {
   try {
     const collectionSlug = typeof req?.query?.collection === 'string' ? req.query.collection : undefined;
     const id = typeof req?.query?.id === 'string' ? req.query.id : undefined;
+    const locale = typeof req.query.locale === 'string' ? req.query.locale : undefined
+    const fallbackLocale = typeof req.query.fallbackLocale === 'string' ? req.query.fallbackLocale : undefined
 
     // Unfortunately,
     // There is a route collision between /api/_preferences/[key].js
@@ -78,6 +80,8 @@ async function handler(req: PayloadRequest, res: Response) {
           req,
           collection: collectionSlug,
           id,
+          locale,
+          fallbackLocale,
           depth: Number(req.query.depth),
           overrideAccess: false,
           draft: req.query.draft === 'true',
@@ -96,6 +100,8 @@ async function handler(req: PayloadRequest, res: Response) {
           id,
           data: req.body,
           depth: parseInt(String(req.query.depth), 10),
+          locale,
+          fallbackLocale,
           draft,
           autosave,
           overrideAccess: false,
@@ -118,6 +124,8 @@ async function handler(req: PayloadRequest, res: Response) {
           user: req.user,
           collection: collectionSlug,
           id,
+          locale,
+          fallbackLocale,
           depth: parseInt(String(req.query.depth), 10),
           overrideAccess: false,
         });
