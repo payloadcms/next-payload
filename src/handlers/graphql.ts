@@ -15,7 +15,7 @@ async function handler(req: PayloadRequest, res: Response, next) {
     req.payloadAPI = 'graphQL'
 
     if (req.method === 'POST') {
-      return graphQLHandler(req, res)(req, res, next)
+      return graphQLHandler(req, res)(req, res)
     }
 
     if (req.method === 'OPTIONS') {
