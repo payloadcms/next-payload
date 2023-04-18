@@ -1,13 +1,16 @@
+import httpStatus from 'http-status'
 import refresh from 'payload/dist/auth/operations/refresh'
 import getExtractJWT from 'payload/dist/auth/getExtractJWT'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import convertPayloadJSONBody from '@payloadcms/next-payload/middleware/convertPayloadJSONBody'
-import fileUpload from '@payloadcms/next-payload/middleware/fileUpload'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
-import withCookie from '@payloadcms/next-payload/middleware/cookie'
+import withPayload from '../../middleware/withPayload'
+import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
+import fileUpload from '../../middleware/fileUpload'
+import withDataLoader from '../../middleware/dataLoader'
+import withCookie from '../../middleware/cookie'
+import { PayloadRequest } from 'payload/dist/types'
+import { Response } from 'express'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
   try {
     let token;
 
@@ -18,6 +21,18 @@ async function handler(req, res) {
       token = req.body.token;
     }
 
+    if (typeof req.query.collection !== 'string') {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        message: 'Collection not specified',
+      })
+    }
+
+    if (!req.payload.collections?.[req.query.collection]) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        message: 'Collection not found',
+      })
+    }
+
     const result = await refresh({
       req,
       res,
@@ -25,7 +40,7 @@ async function handler(req, res) {
       token,
     });
 
-    return res.status(200).json({
+    return res.status(httpStatus.OK).json({
       message: 'Token refresh successful',
       ...result,
     });

@@ -5,7 +5,17 @@ const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
-  const { configPath, cssPath, payloadPath } = paths;
+  if (!process?.env?.PAYLOAD_CONFIG_PATH) {
+    throw new Error(
+      "PAYLOAD_CONFIG_PATH environment variable is required. Please add it to your .env file."
+    );
+  }
+  const configPath = path.resolve(
+    process.cwd(),
+    process.env.PAYLOAD_CONFIG_PATH
+  );
+
+  const { cssPath, payloadPath } = paths || {};
 
   const payloadConfig = await loadPayloadConfig(configPath);
 

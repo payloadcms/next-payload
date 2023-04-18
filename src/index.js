@@ -1,1 +1,0 @@
-exports.withPayload = require('./nextConfigPlugin')

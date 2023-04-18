@@ -1,31 +1,38 @@
+import { Response } from 'express'
 import httpStatus from 'http-status'
+import { PayloadRequest } from 'payload/dist/types'
 import NotFound from 'payload/dist/errors/NotFound'
 import updatePreference from 'payload/dist/preferences/operations/update'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import deletePreference from 'payload/dist/preferences/operations/delete'
 import findPreference from 'payload/dist/preferences/operations/findOne'
 import formatSuccessResponse from 'payload/dist/express/responses/formatSuccess'
-import convertPayloadJSONBody from '@payloadcms/next-payload/middleware/convertPayloadJSONBody'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import authenticate from '@payloadcms/next-payload/middleware/authenticate'
-import initializePassport from '@payloadcms/next-payload/middleware/initializePassport'
-import i18n from '@payloadcms/next-payload/middleware/i18n'
-import fileUpload from '@payloadcms/next-payload/middleware/fileUpload'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
+import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
+import withPayload from './../../middleware/withPayload'
+import authenticate from '../../middleware/authenticate'
+import initializePassport from '../../middleware/initializePassport'
+import i18n from '../../middleware/i18n'
+import fileUpload from '../../middleware/fileUpload'
+import withDataLoader from '../../middleware/dataLoader'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
   try {
+    const collectionSlug = typeof req?.query?.collection === 'string' ? req.query.collection : undefined;
+    const id = typeof req?.query?.id === 'string' ? req.query.id : undefined;
+
     // Unfortunately,
     // There is a route collision between /api/_preferences/[key].js
     // and /api/[collection]/[id].js
     // so both need to be handled in this file for now
-    if (req.query.collection === '_preferences') {
+    if (collectionSlug === '_preferences') {
+      const key = typeof req.query.id === 'string' ? req.query.id : undefined;
+
       switch (req.method) {
         case 'GET': {
           const result = await findPreference({
             req,
             user: req.user,
-            key: req.query.id,
+            key,
           });
 
           return res.status(httpStatus.OK).json(result || { message: req.t('general:notFound'), value: null })
@@ -35,7 +42,7 @@ async function handler(req, res) {
           const doc = await updatePreference({
             req,
             user: req.user,
-            key: req.query.id,
+            key,
             value: req.body.value || req.body,
           });
 
@@ -49,7 +56,7 @@ async function handler(req, res) {
           await deletePreference({
             req,
             user: req.user,
-            key: req.query.id,
+            key,
           });
 
           return res.status(httpStatus.OK).json({
@@ -59,12 +66,18 @@ async function handler(req, res) {
       }
     }
 
+    if (collectionSlug && req.payload.collections[collectionSlug] === undefined) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        message: 'Collection not found',
+      })
+    }
+
     switch (req.method) {
       case 'GET': {
         const doc = await req.payload.findByID({
           req,
-          collection: req.query.collection,
-          id: req.query.id,
+          collection: collectionSlug,
+          id,
           depth: Number(req.query.depth),
           overrideAccess: false,
           draft: req.query.draft === 'true',
@@ -79,8 +92,8 @@ async function handler(req, res) {
 
         const doc = await req.payload.update({
           user: req.user,
-          collection: req.query.collection,
-          id: req.query.id,
+          collection: collectionSlug,
+          id,
           data: req.body,
           depth: parseInt(String(req.query.depth), 10),
           draft,
@@ -103,8 +116,8 @@ async function handler(req, res) {
       case 'DELETE': {
         const doc = await req.payload.delete({
           user: req.user,
-          collection: req.query.collection,
-          id: req.query.id,
+          collection: collectionSlug,
+          id,
           depth: parseInt(String(req.query.depth), 10),
           overrideAccess: false,
         });

@@ -22,11 +22,8 @@
     "isolatedModules": true,
     "noEmit": false,
     "paths": {
-      "payload/generated-types": [
-        "./payload-types.ts"
-      ],
       "@payloadcms/next-payload/*": [
-        "./dist/*"
+        "./*"
       ]
     }
   },
@@ -34,7 +31,7 @@
     "swc": true,
   },
   "include": [
-    "src"
+    "src/**/*",
   ],
   "exclude": [
     "node_modules",

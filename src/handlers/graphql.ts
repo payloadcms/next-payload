@@ -1,16 +1,19 @@
+import { PayloadRequest } from 'payload/dist/types'
+import { Response } from 'express'
 import httpStatus from 'http-status'
 import NotFound from 'payload/dist/errors/NotFound'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import graphQLHandler from 'payload/dist/graphql/graphQLHandler'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import authenticate from '@payloadcms/next-payload/middleware/authenticate'
-import initializePassport from '@payloadcms/next-payload/middleware/initializePassport'
-import i18n from '@payloadcms/next-payload/middleware/i18n'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
+import withPayload from '../middleware/withPayload'
+import authenticate from '../middleware/authenticate'
+import initializePassport from '../middleware/initializePassport'
+import i18n from '../middleware/i18n'
+import withDataLoader from '../middleware/dataLoader'
+// import withQs from '../middleware/qsMiddleware'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
   try {
-    req.payloadAPI = 'GraphQL'
+    req.payloadAPI = 'graphQL'
 
     if (req.method === 'POST') {
       return graphQLHandler(req, res)(req, res)
@@ -30,11 +33,13 @@ async function handler(req, res) {
 export default withPayload(
   withDataLoader(
     i18n(
+      // withQs(
       initializePassport(
         authenticate(
           handler
         )
       )
+      // )
     )
   )
 )

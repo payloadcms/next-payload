@@ -1,14 +1,17 @@
-import authenticate from '@payloadcms/next-payload/middleware/authenticate'
-import initializePassport from '@payloadcms/next-payload/middleware/initializePassport'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
+import { Response } from 'express'
+import httpStatus from 'http-status'
+import { PayloadRequest } from 'payload/dist/types'
 import access from 'payload/dist/auth/operations/access'
+import authenticate from '../middleware/authenticate'
+import initializePassport from '../middleware/initializePassport'
+import withPayload from '../middleware/withPayload'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
   const accessResult = await access({
     req,
   })
 
-  return res.status(200).json(accessResult)
+  return res.status(httpStatus.OK).json(accessResult)
 }
 
 export default withPayload(

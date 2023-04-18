@@ -1,9 +1,10 @@
+import httpStatus from 'http-status'
 import { docAccess } from 'payload/dist/collections/operations/docAccess'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
-import authenticate from '@payloadcms/next-payload/middleware/authenticate'
-import initializePassport from '@payloadcms/next-payload/middleware/initializePassport'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
+import authenticate from '../../../middleware/authenticate'
+import initializePassport from '../../../middleware/initializePassport'
+import withPayload from '../../../middleware/withPayload'
+import withDataLoader from '../../../middleware/dataLoader'
 
 async function handler(req, res) {
 
@@ -15,7 +16,7 @@ async function handler(req, res) {
         collection: req.payload.collections[req.query.collection],
       }
     })
-    return res.status(200).json(docAccessResult)
+    return res.status(httpStatus.OK).json(docAccessResult)
   } catch (error) {
     const errorHandler = getErrorHandler(req.payload.config, req.payload.logger)
     return errorHandler(error, req, res, () => null);

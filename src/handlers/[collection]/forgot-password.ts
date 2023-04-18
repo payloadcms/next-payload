@@ -1,11 +1,25 @@
+import { Response } from 'express'
 import httpStatus from 'http-status'
+import { PayloadRequest } from 'payload/dist/types'
 import forgotPassword from 'payload/dist/auth/operations/forgotPassword'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import convertPayloadJSONBody from '@payloadcms/next-payload/middleware/convertPayloadJSONBody'
-import fileUpload from '@payloadcms/next-payload/middleware/fileUpload'
+import withPayload from '../../middleware/withPayload'
+import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
+import fileUpload from '../../middleware/fileUpload'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
+  if (typeof req.query.collection !== 'string') {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      message: 'Collection not specified',
+    })
+  }
+
+  if (!req.payload.collections?.[req.query.collection]) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      message: 'Collection not found',
+    })
+  }
+
   try {
     const collection = req.payload.collections[req.query.collection]
 

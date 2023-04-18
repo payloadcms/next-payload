@@ -5427,6 +5427,13 @@ qs@6.11.0, qs@^6.11.0, qs@^6.9.1:
   dependencies:
     side-channel "^1.0.4"
 
+qs@^6.11.1:
+  version "6.11.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.1.tgz#6c29dff97f0c0060765911ba65cbc9764186109f"
+  integrity sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==
+  dependencies:
+    side-channel "^1.0.4"
+
 qs@~6.4.0:
   version "6.4.1"
   resolved "https://registry.npmjs.org/qs/-/qs-6.4.1.tgz#2bad97710a5b661c366b378b1e3a44a592ff45e6"

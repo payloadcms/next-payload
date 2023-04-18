@@ -1,12 +1,27 @@
+import httpStatus from 'http-status'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import registerFirstUser from 'payload/dist/auth/operations/registerFirstUser'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import convertPayloadJSONBody from '@payloadcms/next-payload/middleware/convertPayloadJSONBody'
-import fileUpload from '@payloadcms/next-payload/middleware/fileUpload'
-import withCookies from '@payloadcms/next-payload/middleware/cookie'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
+import withPayload from '../../middleware/withPayload'
+import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
+import fileUpload from '../../middleware/fileUpload'
+import withCookies from '../../middleware/cookie'
+import withDataLoader from '../../middleware/dataLoader'
+import { PayloadRequest } from 'payload/dist/types'
+import { Response } from 'express'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
+  if (typeof req.query.collection !== 'string') {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      message: 'Collection not specified',
+    })
+  }
+
+  if (!req.payload.collections?.[req.query.collection]) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      message: 'Collection not found',
+    })
+  }
+
   try {
     const firstUser = await registerFirstUser({
       req,
@@ -15,7 +30,7 @@ async function handler(req, res) {
       data: req.body,
     })
 
-    return res.status(200).json(firstUser)
+    return res.status(httpStatus.OK).json(firstUser)
   } catch (error) {
     const errorHandler = getErrorHandler(req.payload.config, req.payload.logger)
     return errorHandler(error, req, res, () => null);

@@ -1,58 +1,51 @@
 import httpStatus from 'http-status'
-import NotFound from 'payload/dist/errors/NotFound'
+import { Response } from 'express'
+import { PayloadRequest } from 'payload/dist/types'
 import { getTranslation } from 'payload/dist/utilities/getTranslation'
+import NotFound from 'payload/dist/errors/NotFound'
 import formatSuccessResponse from 'payload/dist/express/responses/formatSuccess'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
-import withPayload from '@payloadcms/next-payload/middleware/withPayload'
-import convertPayloadJSONBody from '@payloadcms/next-payload/middleware/convertPayloadJSONBody'
-import authenticate from '@payloadcms/next-payload/middleware/authenticate'
-import initializePassport from '@payloadcms/next-payload/middleware/initializePassport'
-import i18n from '@payloadcms/next-payload/middleware/i18n'
-import fileUpload from '@payloadcms/next-payload/middleware/fileUpload'
-import withDataLoader from '@payloadcms/next-payload/middleware/dataLoader'
+import withPayload from '../../middleware/withPayload'
+import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
+import authenticate from '../../middleware/authenticate'
+import initializePassport from '../../middleware/initializePassport'
+import i18n from '../../middleware/i18n'
+import fileUpload from '../../middleware/fileUpload'
+import withDataLoader from '../../middleware/dataLoader'
+import { isNumber } from '../../utilities/isNumber'
+import withQs from '../../middleware/qsMiddleware'
 
-async function handler(req, res) {
+async function handler(req: PayloadRequest, res: Response) {
   try {
+    const collectionSlug = typeof req?.query?.collection === 'string' ? req.query.collection : undefined;
+
     switch (req.method) {
       case 'GET': {
-        let page;
-        let limit;
-
-        if (typeof req.query.page === 'string') {
-          const parsedPage = parseInt(req.query.page, 10);
-
-          if (!Number.isNaN(parsedPage)) {
-            page = parsedPage;
-          }
-        }
-
-        if (typeof req.query.limit === 'string') {
-          const parsedLimit = parseInt(req.query.limit, 10);
-
-          if (!Number.isNaN(parsedLimit)) {
-            limit = parsedLimit;
-          }
-        }
+        const limit = isNumber(req?.query?.limit) ? Number(req.query.limit) : undefined;
+        const page = isNumber(req?.query?.page) ? Number(req.query.page) : undefined;
+        const sort = typeof req?.query?.sort === 'string' ? req.query.sort : undefined;
+        const where = req.query?.where ? req.query.where : undefined;
 
         const result = await req.payload.find({
           req,
-          collection: req.query.collection,
-          where: req.query.where,
+          collection: collectionSlug,
+          // @ts-ignore
+          where,
           page,
           limit,
-          sort: req.query.sort,
+          sort,
           depth: Number(req.query.depth),
           draft: req.query.draft === 'true',
           overrideAccess: false,
         })
 
-        return res.status(200).json(result)
+        return res.status(httpStatus.OK).json(result)
       }
 
       case 'POST': {
         const doc = await req.payload.create({
           req,
-          collection: req.query.collection,
+          collection: collectionSlug,
           data: req.body,
           depth: Number(req.query.depth),
           draft: req.query.draft === 'true',
@@ -60,9 +53,9 @@ async function handler(req, res) {
           file: req.files && req.files.file ? req.files.file : undefined,
         })
 
-        const collection = req.payload.collections[req.query.collection]
+        const collection = req.payload.collections[collectionSlug]
 
-        return res.status(201).json({
+        return res.status(httpStatus.CREATED).json({
           ...formatSuccessResponse(req.i18n.t('general:successfullyCreated', { label: getTranslation(collection.config.labels.singular, req.i18n) }), 'message'),
           doc,
         })
@@ -86,11 +79,13 @@ export const config = {
 export default withPayload(
   withDataLoader(
     fileUpload(
-      convertPayloadJSONBody(
-        i18n(
-          initializePassport(
-            authenticate(
-              handler
+      withQs(
+        convertPayloadJSONBody(
+          i18n(
+            initializePassport(
+              authenticate(
+                handler
+              )
             )
           )
         )
