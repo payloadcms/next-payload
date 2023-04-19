@@ -27,10 +27,10 @@
     "build": "tsc --build tsconfig.json"
   },
   "files": [
-    "middleware",
     "mocks",
     "templates",
     "utilities",
+    "dist",
     "*.js"
   ],
   "dependencies": {
