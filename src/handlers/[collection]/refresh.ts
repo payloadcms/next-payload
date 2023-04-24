@@ -50,13 +50,6 @@ async function handler(req: PayloadRequest, res: Response) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  }
-}
-
 export default withPayload(
   withDataLoader(
     fileUpload(

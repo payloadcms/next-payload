@@ -34,9 +34,3 @@ export default withPayload(
     )
   )
 )
-
-export const config = {
-  api: {
-    externalResolver: true
-  }
-}

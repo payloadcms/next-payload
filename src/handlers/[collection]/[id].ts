@@ -145,13 +145,6 @@ async function handler(req: PayloadRequest, res: Response) {
   return res.status(httpStatus.NOT_FOUND).json(new NotFound(req.t))
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  }
-}
-
 export default withPayload(
   withDataLoader(
     fileUpload(
