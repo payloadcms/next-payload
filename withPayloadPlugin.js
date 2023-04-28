@@ -55,7 +55,7 @@ const withPayload = async (config, paths) => {
       incomingWebpackConfig.module.rules.push({
         oneOf: [
           {
-            test: /node_modules\/payload\/.*\.(?:ico|gif|png|jpg|jpeg|woff(2)?|eot|ttf|otf|svg)/,
+            test: /node_modules[\\\/]payload[\\\/].*\.(?:ico|gif|png|jpg|jpeg|woff(2)?|eot|ttf|otf|svg)/,
             type: "asset/resource",
           },
         ],
