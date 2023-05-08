@@ -1,7 +1,7 @@
 {
   "name": "@payloadcms/next-payload",
   "description": "Payload deployed as Vercel functions within a NextJS app",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "license": "MIT",
   "author": {
     "email": "info@payloadcms.com",
