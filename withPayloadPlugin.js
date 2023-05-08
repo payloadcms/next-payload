@@ -79,10 +79,13 @@ const withPayload = async (config, paths) => {
             "payload-config": configPath,
             payload$: mockModulePath,
             "payload-user-css": cssPath || customCSSMockPath,
-            sharp: mockModulePath,
           },
         },
       };
+
+      if (!configRequiresSharp) {
+        newWebpackConfig.resolve.alias.sharp = mockModulePath;
+      }
 
       if (typeof payloadConfig.admin.webpack === "function") {
         return payloadConfig.admin.webpack(newWebpackConfig);
