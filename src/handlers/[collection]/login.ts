@@ -8,15 +8,12 @@ import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
 import withCookie from '../../middleware/cookie'
 import fileUpload from '../../middleware/fileUpload'
 import withDataLoader from '../../middleware/dataLoader'
+import i18n from '../../middleware/i18n'
 
 async function handler(req: PayloadRequest, res: Response) {
-  if (typeof req.query.collection !== 'string') {
-    return res.status(httpStatus.BAD_REQUEST).json({
-      message: 'Collection not specified',
-    })
-  }
+  const collectionSlug = req.query.collection as string;
 
-  if (!req.payload.collections?.[req.query.collection]) {
+  if (!req.payload.collections?.[collectionSlug]) {
     return res.status(httpStatus.BAD_REQUEST).json({
       message: 'Collection not found',
     })
@@ -26,7 +23,7 @@ async function handler(req: PayloadRequest, res: Response) {
     const result = await login({
       req,
       res,
-      collection: req.payload.collections[req.query.collection],
+      collection: req.payload.collections[collectionSlug],
       data: req.body,
       depth: parseInt(String(req.query.depth), 10),
     })
@@ -47,9 +44,11 @@ async function handler(req: PayloadRequest, res: Response) {
 export default withPayload(
   withDataLoader(
     fileUpload(
-      convertPayloadJSONBody(
-        withCookie(
-          handler
+      i18n(
+        convertPayloadJSONBody(
+          withCookie(
+            handler
+          )
         )
       )
     )
