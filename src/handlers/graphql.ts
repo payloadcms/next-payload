@@ -12,7 +12,7 @@ import withDataLoader from '../middleware/dataLoader'
 
 async function handler(req: PayloadRequest, res: Response, next) {
   try {
-    req.payloadAPI = 'graphQL'
+    req.payloadAPI = 'GraphQL'
 
     if (req.method === 'POST') {
       return graphQLHandler(req, res)(req, res, next)
