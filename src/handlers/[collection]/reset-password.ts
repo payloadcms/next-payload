@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import httpStatus from 'http-status'
 import { PayloadRequest } from 'payload/dist/types'
-import forgotPassword from 'payload/dist/auth/operations/forgotPassword'
+import resetPassword from 'payload/dist/auth/operations/resetPassword'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import withPayload from '../../middleware/withPayload'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
@@ -18,19 +18,18 @@ async function handler(req: PayloadRequest, res: Response) {
   }
 
   try {
-    const collection = req.payload.collections[collectionSlug]
-
-    await forgotPassword({
+    const result = await resetPassword({
+      collection: req.payload.collections[collectionSlug],
+      data: req.body,
       req,
-      collection,
-      data: { email: req.body.email },
-      disableEmail: req.body.disableEmail,
-      expiration: req.body.expiration,
+      res,
     });
 
     return res.status(httpStatus.OK)
       .json({
-        message: 'Success',
+        message: 'Password reset successfully.',
+        token: result.token,
+        user: result.user,
       });
   } catch (error) {
     const errorHandler = getErrorHandler(req.payload.config, req.payload.logger)

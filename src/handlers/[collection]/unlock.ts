@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import httpStatus from 'http-status'
 import { PayloadRequest } from 'payload/dist/types'
-import forgotPassword from 'payload/dist/auth/operations/forgotPassword'
+import unlock from 'payload/dist/auth/operations/unlock'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import withPayload from '../../middleware/withPayload'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
@@ -18,14 +18,10 @@ async function handler(req: PayloadRequest, res: Response) {
   }
 
   try {
-    const collection = req.payload.collections[collectionSlug]
-
-    await forgotPassword({
+    await unlock({
       req,
-      collection,
+      collection: req.payload.collections[collectionSlug],
       data: { email: req.body.email },
-      disableEmail: req.body.disableEmail,
-      expiration: req.body.expiration,
     });
 
     return res.status(httpStatus.OK)

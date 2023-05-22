@@ -10,13 +10,9 @@ import authenticate from '../../middleware/authenticate'
 import withCookie from '../../middleware/cookie'
 
 async function handler(req: PayloadRequest, res: Response) {
-  if (typeof req.query.collection !== 'string') {
-    return res.status(httpStatus.BAD_REQUEST).json({
-      message: 'Collection not specified',
-    })
-  }
+  const collectionSlug = req.query.collection as string;
 
-  if (!req.payload.collections?.[req.query.collection]) {
+  if (!req.payload.collections?.[collectionSlug]) {
     return res.status(httpStatus.BAD_REQUEST).json({
       message: 'Collection not found',
     })
@@ -24,7 +20,7 @@ async function handler(req: PayloadRequest, res: Response) {
 
   try {
     const message = await logout({
-      collection: req.payload.collections[req.query.collection],
+      collection: req.payload.collections[collectionSlug],
       res,
       req,
     });

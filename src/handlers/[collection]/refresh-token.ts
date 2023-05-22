@@ -7,6 +7,7 @@ import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
 import fileUpload from '../../middleware/fileUpload'
 import withDataLoader from '../../middleware/dataLoader'
 import withCookie from '../../middleware/cookie'
+import withAuth from '../../middleware/authenticate'
 import { PayloadRequest } from 'payload/dist/types'
 import { Response } from 'express'
 
@@ -48,10 +49,12 @@ async function handler(req: PayloadRequest, res: Response) {
 
 export default withPayload(
   withDataLoader(
-    fileUpload(
-      convertPayloadJSONBody(
-        withCookie(
-          handler
+    withAuth(
+      fileUpload(
+        convertPayloadJSONBody(
+          withCookie(
+            handler
+          )
         )
       )
     )

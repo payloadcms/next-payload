@@ -10,13 +10,9 @@ import { PayloadRequest } from 'payload/dist/types'
 import { Response } from 'express'
 
 async function handler(req: PayloadRequest, res: Response) {
-  if (typeof req.query.collection !== 'string') {
-    return res.status(httpStatus.BAD_REQUEST).json({
-      message: 'Collection not specified',
-    })
-  }
+  const collectionSlug = req.query.collection as string;
 
-  if (!req.payload.collections?.[req.query.collection]) {
+  if (!req.payload.collections?.[collectionSlug]) {
     return res.status(httpStatus.BAD_REQUEST).json({
       message: 'Collection not found',
     })
@@ -26,7 +22,7 @@ async function handler(req: PayloadRequest, res: Response) {
     const firstUser = await registerFirstUser({
       req,
       res,
-      collection: req.payload.collections[req.query.collection],
+      collection: req.payload.collections[collectionSlug],
       data: req.body,
     })
 
