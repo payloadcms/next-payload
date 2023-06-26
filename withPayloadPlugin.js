@@ -25,8 +25,8 @@ const withPayload = async (config, paths) => {
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
-      config.experimental.outputFileTracingExcludes &&
-      config.experimental.outputFileTracingExcludes["**/*"]
+        config.experimental.outputFileTracingExcludes &&
+        config.experimental.outputFileTracingExcludes["**/*"]
         ? config.experimental.outputFileTracingExcludes["**/*"]
         : []),
     ],
@@ -45,6 +45,7 @@ const withPayload = async (config, paths) => {
       ...config.experimental,
       appDir: true,
       outputFileTracingExcludes,
+      serverComponentsExternalPackages: ["mongoose", "payload"],
     },
     webpack: (webpackConfig, webpackOptions) => {
       const incomingWebpackConfig =
