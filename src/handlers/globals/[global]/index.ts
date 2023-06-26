@@ -53,6 +53,7 @@ async function handler(req: PayloadRequest, res: Response) {
           overrideAccess: false,
           showHiddenFields: false,
           draft: req.query.draft === 'true',
+          depth: isNumber(req?.query?.depth) ? Number(req.query.depth) : 1,
         })
 
         return res.status(httpStatus.OK).json({
