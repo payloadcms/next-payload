@@ -7,6 +7,7 @@ import withPayload from '../../middleware/withPayload'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
 import fileUpload from '../../middleware/fileUpload'
 import i18n from '../../middleware/i18n'
+import withCookie from '../../middleware/cookie'
 
 async function handler(req: PayloadRequest, res: Response) {
   const collectionSlug = req.query.collection as string;
@@ -41,7 +42,9 @@ export default withPayload(
   fileUpload(
     i18n(
       convertPayloadJSONBody(
-        handler
+        withCookie(
+          handler
+        )
       )
     )
   )
