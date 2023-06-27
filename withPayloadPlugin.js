@@ -45,7 +45,11 @@ const withPayload = async (config, paths) => {
       ...config.experimental,
       appDir: true,
       outputFileTracingExcludes,
-      serverComponentsExternalPackages: ["mongoose", "payload"],
+      serverComponentsExternalPackages: [
+        ...(config?.experimental?.serverComponentsExternalPackages || []),
+        "mongoose",
+        "payload",
+      ],
     },
     webpack: (webpackConfig, webpackOptions) => {
       const incomingWebpackConfig =
