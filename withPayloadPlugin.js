@@ -100,7 +100,7 @@ const withPayload = async (config, paths) => {
               payloadPath ||
               path.resolve(process.cwd(), "./payload/payloadClient.ts"),
             ...payloadWebpackConfig.resolve.alias,
-            [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
+            // [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
             // ^ useful for development with `yarn link`
           },
         },
