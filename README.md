@@ -59,7 +59,7 @@ module.exports = withPayload(
     payloadPath: path.resolve(process.cwd(), "./payload/payloadClient.ts"),
 
     // Set a custom Payload admin route (optional, default is `/admin`)
-    // IMPORTANT! If you want to configure a custom admin route, make sure to follow the additional instructions below
+    // NOTE: if you want to configure a custom admin route make sure to follow the additional instructions located in the "Set a custom admin route" section below.
     adminRoute: "/dashboard",
   }
 );

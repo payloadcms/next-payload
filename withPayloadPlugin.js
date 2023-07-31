@@ -10,7 +10,7 @@ const withPayload = async (config, paths) => {
     cssPath,
     payloadPath,
     configPath,
-    adminRoute = "/admin",
+    adminRoute: adminRouteArg = "/admin",
   } = paths || {};
 
   let payloadConfig = await loadPayloadConfig(configPath);
@@ -43,8 +43,8 @@ const withPayload = async (config, paths) => {
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
-      config.experimental.outputFileTracingExcludes &&
-      config.experimental.outputFileTracingExcludes["**/*"]
+        config.experimental.outputFileTracingExcludes &&
+        config.experimental.outputFileTracingExcludes["**/*"]
         ? config.experimental.outputFileTracingExcludes["**/*"]
         : []),
     ],
@@ -100,6 +100,8 @@ const withPayload = async (config, paths) => {
               payloadPath ||
               path.resolve(process.cwd(), "./payload/payloadClient.ts"),
             ...payloadWebpackConfig.resolve.alias,
+            [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
+            // ^ useful for development with `yarn link`
           },
         },
       };
@@ -126,12 +128,11 @@ const withPayload = async (config, paths) => {
       if (typeof config.rewrites === "function") {
         userRewrites = await config.rewrites();
       }
-
-      // Cleaning up the admin route to make sure it's a valid path
-      const cleanedAdminRoute = adminRoute.split("/").filter(Boolean).join("/");
+      console.log({ adminRouteArg })
+      const adminRoute = adminRouteArg.split("/").filter(Boolean).join("/");
       const payloadAdminRewrite = {
-        source: "/" + cleanedAdminRoute + "/:path*",
-        destination: "/" + cleanedAdminRoute,
+        source: `/${adminRoute}/:path*`,
+        destination: `/${adminRoute}`,
       };
 
       if (Array.isArray(userRewrites)) {
