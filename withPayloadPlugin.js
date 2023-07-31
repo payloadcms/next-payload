@@ -6,7 +6,12 @@ const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
-  const { cssPath, payloadPath, configPath } = paths || {};
+  const {
+    cssPath,
+    payloadPath,
+    configPath,
+    adminRoute = "/admin",
+  } = paths || {};
 
   let payloadConfig = await loadPayloadConfig(configPath);
   payloadConfig = {
@@ -38,8 +43,8 @@ const withPayload = async (config, paths) => {
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
-        config.experimental.outputFileTracingExcludes &&
-        config.experimental.outputFileTracingExcludes["**/*"]
+      config.experimental.outputFileTracingExcludes &&
+      config.experimental.outputFileTracingExcludes["**/*"]
         ? config.experimental.outputFileTracingExcludes["**/*"]
         : []),
     ],
@@ -122,9 +127,11 @@ const withPayload = async (config, paths) => {
         userRewrites = await config.rewrites();
       }
 
+      // Cleaning up the admin route to make sure it's a valid path
+      const cleanedAdminRoute = adminRoute.split("/").filter(Boolean).join("/");
       const payloadAdminRewrite = {
-        source: "/admin/:path*",
-        destination: "/admin",
+        source: "/" + cleanedAdminRoute + "/:path*",
+        destination: "/" + cleanedAdminRoute,
       };
 
       if (Array.isArray(userRewrites)) {
