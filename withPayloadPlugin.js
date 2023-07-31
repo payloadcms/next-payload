@@ -1,4 +1,5 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const { getBaseConfig } = require("payload/dist/bundlers/webpack/configs/base");
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
@@ -7,7 +8,19 @@ const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 const withPayload = async (config, paths) => {
   const { cssPath, payloadPath, configPath } = paths || {};
 
-  const payloadConfig = await loadPayloadConfig(configPath);
+  let payloadConfig = await loadPayloadConfig(configPath);
+  payloadConfig = {
+    ...payloadConfig,
+    admin: {
+      ...payloadConfig.admin,
+      css: cssPath || customCSSMockPath,
+    },
+    paths: {
+      ...payloadConfig.paths,
+      rawConfig: configPath,
+    }
+  }
+  const payloadWebpackConfig = getBaseConfig(payloadConfig);
 
   const configRequiresSharp = payloadConfig.collections.find(({ upload }) => {
     if (typeof upload === "object" && upload !== null) {
@@ -81,9 +94,7 @@ const withPayload = async (config, paths) => {
             "@payloadcms/next-payload/getPayload":
               payloadPath ||
               path.resolve(process.cwd(), "./payload/payloadClient.ts"),
-            "payload-config": configPath,
-            payload$: mockModulePath,
-            "payload-user-css": cssPath || customCSSMockPath,
+            ...payloadWebpackConfig.resolve.alias,
           },
         },
       };
