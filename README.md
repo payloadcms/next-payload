@@ -21,7 +21,7 @@ yarn next-payload install
 #### 3. Your `.env` should include:
 ```env
 # mongo connection string
-MONGODB_URI=mongodb://localhost/create-next-app-serverless
+MONGODB_URI=mongodb://127.0.0.1/create-next-app-serverless
 # payload secret
 PAYLOAD_SECRET=SOME_SECRET
 # path to your payload.config file
