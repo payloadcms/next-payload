@@ -60,7 +60,7 @@ module.exports = withPayload(
 
     // Set a custom Payload admin route (optional, default is `/admin`)
     // NOTE: if you want to configure a custom admin route make sure to follow the additional instructions located in the "Set a custom admin route" section below.
-    adminRoute: "/dashboard",
+    adminRoute: "/admin", // default is "/admin"
   }
 );
 ```
