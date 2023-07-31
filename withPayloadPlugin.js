@@ -128,7 +128,7 @@ const withPayload = async (config, paths) => {
       if (typeof config.rewrites === "function") {
         userRewrites = await config.rewrites();
       }
-      console.log({ adminRouteArg })
+
       const adminRoute = adminRouteArg.split("/").filter(Boolean).join("/");
       const payloadAdminRewrite = {
         source: `/${adminRoute}/:path*`,
