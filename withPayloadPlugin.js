@@ -84,6 +84,7 @@ const withPayload = async (config, paths) => {
             "payload-config": configPath,
             payload$: mockModulePath,
             "payload-user-css": cssPath || customCSSMockPath,
+            [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
           },
         },
       };
