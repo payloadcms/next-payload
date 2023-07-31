@@ -1,13 +1,31 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const { getBaseConfig } = require("payload/dist/bundlers/webpack/configs/base");
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
-  const { cssPath, payloadPath, configPath } = paths || {};
+  const {
+    cssPath,
+    payloadPath,
+    configPath,
+    adminRoute: adminRouteArg = "/admin",
+  } = paths || {};
 
-  const payloadConfig = await loadPayloadConfig(configPath);
+  let payloadConfig = await loadPayloadConfig(configPath);
+  payloadConfig = {
+    ...payloadConfig,
+    admin: {
+      ...payloadConfig.admin,
+      css: cssPath || customCSSMockPath,
+    },
+    paths: {
+      ...payloadConfig.paths,
+      rawConfig: configPath,
+    }
+  }
+  const payloadWebpackConfig = getBaseConfig(payloadConfig);
 
   const configRequiresSharp = payloadConfig.collections.find(({ upload }) => {
     if (typeof upload === "object" && upload !== null) {
@@ -76,9 +94,9 @@ const withPayload = async (config, paths) => {
             "@payloadcms/next-payload/getPayload":
               payloadPath ||
               path.resolve(process.cwd(), "./payload/payloadClient.ts"),
-            "payload-config": configPath,
-            payload$: mockModulePath,
-            "payload-user-css": cssPath || customCSSMockPath,
+            ...payloadWebpackConfig.resolve.alias,
+            // [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
+            // ^ useful for development with `yarn link`
           },
         },
       };
@@ -105,10 +123,11 @@ const withPayload = async (config, paths) => {
       if (typeof config.rewrites === "function") {
         userRewrites = await config.rewrites();
       }
-
+      console.log({ adminRouteArg })
+      const adminRoute = adminRouteArg.split("/").filter(Boolean).join("/");
       const payloadAdminRewrite = {
-        source: "/admin/:path*",
-        destination: "/admin",
+        source: `/${adminRoute}/:path*`,
+        destination: `/${adminRoute}`,
       };
 
       if (Array.isArray(userRewrites)) {

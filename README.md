@@ -1,9 +1,11 @@
 # Next + Payload Serverless
+
 This package contains a set of utilities to allow Payload to be deployed seamlessly, serverless, within an existing NextJS project. It adds the Payload admin UI into the NextJS `/app` folder and adds all Payload endpoints into the `pages/api` folder.
 
 To do so, this package exposes a few different helpers. To get started, follow the steps below:
 
 #### 1. Add this package and Payload to your project
+
 ```bash
 npm install @payloadcms/next-payload payload
 # or
@@ -19,9 +21,10 @@ yarn next-payload install
 ```
 
 #### 3. Your `.env` should include:
+
 ```env
 # mongo connection string
-MONGODB_URI=mongodb://localhost/create-next-app-serverless
+MONGODB_URI=mongodb://127.0.0.1/create-next-app-serverless
 # payload secret
 PAYLOAD_SECRET=SOME_SECRET
 # path to your payload.config file
@@ -34,24 +37,32 @@ Payload needs to inject some requirements into your Next config in order to func
 
 ```ts
 // next.config.js
-const path = require('path');
-const { withPayload } = require('@payloadcms/next-payload');
+const path = require("path");
+const { withPayload } = require("@payloadcms/next-payload");
 
-module.exports = withPayload({
-  // your Next config here
-}, {
-  // The second argument to `withPayload` 
-  // allows you to specify paths to your Payload dependencies.
-  
-  // Point to your Payload config (Required)
-  configPath: path.resolve(__dirname, './payload/payload.config.ts'),
-  
-  // Point to custom Payload CSS (optional)
-  cssPath: path.resolve(__dirname, './css/my-custom-payload-styles.css'),
-  
-  // Point to your exported, initialized Payload instance (optional, default shown below`)
-  payloadPath: path.resolve(process.cwd(), './payload/payloadClient.ts'),
-});
+module.exports = withPayload(
+  {
+    // your Next config here
+  },
+  {
+    // The second argument to `withPayload`
+    // allows you to specify paths to your Payload dependencies
+    // and configure the admin route to your Payload CMS.
+
+    // Point to your Payload config (Required)
+    configPath: path.resolve(__dirname, "./payload/payload.config.ts"),
+
+    // Point to custom Payload CSS (optional)
+    cssPath: path.resolve(__dirname, "./css/my-custom-payload-styles.css"),
+
+    // Point to your exported, initialized Payload instance (optional, default shown below`)
+    payloadPath: path.resolve(process.cwd(), "./payload/payloadClient.ts"),
+
+    // Set a custom Payload admin route (optional, default is `/admin`)
+    // NOTE: if you want to configure a custom admin route make sure to follow the additional instructions located in the "Set a custom admin route" section below.
+    adminRoute: "/admin",
+  }
+);
 ```
 
 And then you're done. Have fun!
@@ -61,6 +72,7 @@ And then you're done. Have fun!
 The `payload/payloadClient.ts` file will be added for you after running `yarn next-payload install` (step 2). You can import `getPayloadClient` from that file from within server components to leverage the [Payloads Local API](https://payloadcms.com/docs/local-api/overview#local-api). The Local API does not use REST or GraphQL, and runs directly on your server talking directly to your database, which saves massively on HTTP-induced latency.
 
 Here is an example:
+
 ```ts
 // app/[slug]/page.tsx
 
@@ -100,6 +112,29 @@ export async function generateStaticParams() {
 
 export default Page;
 ```
+
+## Set a custom admin route
+
+Payload makes it simple to set a [custom `admin` route](https://payloadcms.com/docs/configuration/overview#options). However, since we are using `next-payload` and relying on Next.js to handle all routing, we need to also tell Next.js to rewrite all admin related routes to Payload.
+
+This is handled automatically by wrapping the Next.js configuration in `withPayload`, which by default sets the admin route to `/admin`. If you wish to change this default behavior, we need to do a couple of things.
+
+In the following example, we are changing the admin route to `/dashboard`.
+
+#### 1. Configure the `admin` route in `payload/payload.config.ts` as per the [Payload documentation](https://payloadcms.com/docs/configuration/overview#options).
+
+```ts
+export default buildConfig({
+  // ... Payload config goes here
+  routes: {
+    admin: "/dashboard",
+  },
+});
+```
+
+#### 2. Rename the `admin` directory under `/app` to `dashboard`.
+
+#### 3. Set `adminRoute: "/dashboard",` in the Payload configuration in `next.config.js` as per the documentation above.
 
 ## Known gotchas
 
