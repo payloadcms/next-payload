@@ -5,8 +5,8 @@ const copyFile = require("./utilities/copyFile");
 
 module.exports = () => {
   const useSrc =
-    fs.existsSync(path.resolve(process.cwd()), "./src/app") ||
-    fs.existsSync(path.resolve(process.cwd()), "./src/pages");
+    fs.existsSync(path.resolve(process.cwd(), "./src/app")) ||
+    fs.existsSync(path.resolve(process.cwd(), "./src/pages"));
 
   const basePath = useSrc ? "./src" : ".";
 
