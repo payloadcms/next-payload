@@ -17,8 +17,8 @@ import withDataLoader from '../../middleware/dataLoader'
 
 async function handler(req: PayloadRequest, res: Response) {
   try {
-    const collectionSlug = typeof req?.query?.collection === 'string' ? req.query.collection : undefined;
-    const id = typeof req?.query?.id === 'string' ? req.query.id : undefined;
+    const collectionSlug = req.query.collection as string
+    const id = req.query.id as string;
     const locale = typeof req.query.locale === 'string' ? req.query.locale : undefined
     const fallbackLocale = typeof req.query.fallbackLocale === 'string' ? req.query.fallbackLocale : undefined
 

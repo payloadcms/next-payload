@@ -21,13 +21,13 @@ async function handler(req: PayloadRequest, res: Response) {
     const where = (req.query?.where ? req.query.where : undefined) as Where;
     const locale = typeof req.query.locale === 'string' ? req.query.locale : undefined
     const fallbackLocale = typeof req.query.fallbackLocale === 'string' ? req.query.fallbackLocale : undefined
+    const sort = typeof req?.query?.sort === 'string' ? req.query.sort : undefined;
+    const limit = isNumber(req?.query?.limit) ? Number(req.query.limit) : undefined;
+    const page = isNumber(req?.query?.page) ? Number(req.query.page) : undefined;
+    const depth = isNumber(req?.query?.depth) ? Number(req.query.depth) : undefined;
 
     switch (req.method) {
       case 'GET': {
-        const limit = isNumber(req?.query?.limit) ? Number(req.query.limit) : undefined;
-        const page = isNumber(req?.query?.page) ? Number(req.query.page) : undefined;
-        const sort = typeof req?.query?.sort === 'string' ? req.query.sort : undefined;
-
         const result = await req.payload.find({
           req,
           collection: collectionSlug,
@@ -37,7 +37,7 @@ async function handler(req: PayloadRequest, res: Response) {
           page,
           limit,
           sort,
-          depth: Number(req.query.depth),
+          depth,
           draft: req.query.draft === 'true',
           overrideAccess: false,
         })
@@ -53,7 +53,7 @@ async function handler(req: PayloadRequest, res: Response) {
           fallbackLocale,
           data: req.body,
           where,
-          depth: parseInt(String(req.query.depth), 10),
+          depth,
           draft: req.query.draft === 'true',
           overrideAccess: false,
           file: req.files && req.files.file ? req.files.file : undefined,
@@ -69,7 +69,7 @@ async function handler(req: PayloadRequest, res: Response) {
           locale,
           fallbackLocale,
           where,
-          depth: parseInt(String(req.query.depth), 10),
+          depth,
           overrideAccess: false,
         })
 
@@ -83,7 +83,7 @@ async function handler(req: PayloadRequest, res: Response) {
           locale,
           fallbackLocale,
           data: req.body,
-          depth: Number(req.query.depth),
+          depth,
           draft: req.query.draft === 'true',
           overrideAccess: false,
           file: req.files && req.files.file ? req.files.file : undefined,
