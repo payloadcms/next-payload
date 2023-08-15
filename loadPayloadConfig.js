@@ -14,7 +14,7 @@ const loadPayloadConfig = async (configPath) => {
         tsx: true,
       },
       paths: undefined,
-      baseUrl: path.resolve(__dirname),
+      baseUrl: path.resolve(),
     },
     module: {
       type: "commonjs",
