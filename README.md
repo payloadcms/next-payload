@@ -138,6 +138,19 @@ export default buildConfig({
 
 ## Known gotchas
 
+#### Custom endpoint handlers
+
+To use custom endpoints Next.JS requires you to put a path segment in between two dynamic route parameters. Therefore it is necessary to add some segment, which defaults to `endpoints`. This can be adjusted through editing the name of the folder.
+
+##### Example API call
+
+```ts
+// Expected
+const data = await fetch('https://YOUR_CUSTOM_URL/api/[collection]/[...path]');
+// Required change
+const data = await fetch('https://YOUR_CUSTOM_URL/api/[collection]/endpoints/[...path]');
+```
+
 #### Cold start delays
 
 With the nature of serverless functions, you are bound to encounter "cold start" delays when your serverless functions spin up for the first time. Once they're "warm", the problem will go away for a few minutes until the functions become dormant again. But there's little that this package can do about that issue, unfortunately.
