@@ -153,3 +153,26 @@ To deploy Payload on Vercel, you'll need to configure additional vendors for the
 - Email service (Resend, Sendgrid)
 
 If you don't want to go out and sign up for a separate file hosting service, you can just use [Payload Cloud](https://payloadcms.com/new), which gives you file storage, a MongoDB Atlas database, email service by [Resend](https://resend.com), and lots more.
+
+
+## Developing this plugin
+Using `yarn link` to develop this plugin locally is currently the best way to implement new features or debug existing behavior. Here are the steps to get setup:
+
+#### Setting up the plugin for dev:
+1. Clone this repo
+2. `cd` into the folder you cloned this repo into and run `yarn`
+3. Then run `yarn link`
+4. Uncomment [this line](https://github.com/payloadcms/next-payload/blob/main/withPayloadPlugin.js#L98)
+
+#### Setting up a linked project:
+1. Clone the [next-payload-demo](https://github.com/payloadcms/next-payload-demo) repo 
+2. Follow the getting started section in the [next-payload-demo README](https://github.com/payloadcms/next-payload-demo#getting-started)
+3. `cd` into the folder you cloned the demo into and run `yarn link @payloadcms/next-payload`
+4. Run `yarn dev` and you should see the demo running on `localhost:3000`
+
+#### Making changes to the plugin:
+1. Make your changes to the plugin and save
+2. Run `yarn build` in the plugin folder **(you NEED to do this to see your changes)**
+3. Refresh your browser and see the changes you made!
+
+If you run into any issues while developing, please open an issue in this repo so we can get it resolved. Thanks for contributing!
