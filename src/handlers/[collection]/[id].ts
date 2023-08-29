@@ -9,8 +9,7 @@ import findPreference from 'payload/dist/preferences/operations/findOne'
 import formatSuccessResponse from 'payload/dist/express/responses/formatSuccess'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
 import withPayload from './../../middleware/withPayload'
-import authenticate from '../../middleware/authenticate'
-import initializePassport from '../../middleware/initializePassport'
+import withAuth from '../../middleware/authenticate'
 import i18n from '../../middleware/i18n'
 import fileUpload from '../../middleware/fileUpload'
 import withDataLoader from '../../middleware/dataLoader'
@@ -150,10 +149,8 @@ export default withPayload(
     fileUpload(
       convertPayloadJSONBody(
         i18n(
-          initializePassport(
-            authenticate(
-              handler
-            )
+          withAuth(
+            handler
           )
         )
       )

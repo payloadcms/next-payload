@@ -5,8 +5,7 @@ import withPayload from '../../../middleware/withPayload'
 import withFileUpload from '../../../middleware/fileUpload'
 import convertPayloadJSONBody from '../../../middleware/convertPayloadJSONBody'
 import i18nMiddleware from '../../../middleware/i18n'
-import authenticate from '../../../middleware/authenticate'
-import initializePassport from '../../../middleware/initializePassport'
+import withAuth from '../../../middleware/authenticate'
 import withDataLoader from '../../../middleware/dataLoader'
 import { isNumber } from '../../../utilities/isNumber'
 
@@ -35,10 +34,8 @@ export default withPayload(
     withFileUpload(
       convertPayloadJSONBody(
         i18nMiddleware(
-          initializePassport(
-            authenticate(
-              handler
-            )
+          withAuth(
+            handler
           )
         )
       )

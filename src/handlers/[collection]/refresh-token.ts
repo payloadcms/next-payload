@@ -13,10 +13,7 @@ import { Response } from 'express'
 
 async function handler(req: PayloadRequest, res: Response) {
   try {
-    let token;
-
-    const extractJWT = getExtractJWT(req.payload.config);
-    token = extractJWT(req);
+    let token: string = getExtractJWT(req.payload.config)(req);
 
     if (req.body.token) {
       token = req.body.token;
