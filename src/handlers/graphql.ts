@@ -6,7 +6,6 @@ import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import graphQLHandler from 'payload/dist/graphql/graphQLHandler'
 import withPayload from '../middleware/withPayload'
 import authenticate from '../middleware/authenticate'
-import initializePassport from '../middleware/initializePassport'
 import i18n from '../middleware/i18n'
 import withDataLoader from '../middleware/dataLoader'
 
@@ -32,10 +31,8 @@ async function handler(req: PayloadRequest, res: Response, next) {
 export default withPayload(
   withDataLoader(
     i18n(
-      initializePassport(
-        authenticate(
-          handler
-        )
+      authenticate(
+        handler
       )
     )
   )

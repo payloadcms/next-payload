@@ -7,16 +7,13 @@ import withPayload from '../../../../middleware/withPayload'
 import withFileUpload from '../../../../middleware/fileUpload'
 import convertPayloadJSONBody from '../../../../middleware/convertPayloadJSONBody'
 import i18nMiddleware from '../../../../middleware/i18n'
-import authenticate from '../../../../middleware/authenticate'
-import initializePassport from '../../../../middleware/initializePassport'
+import withAuth from '../../../../middleware/authenticate'
 import withDataLoader from '../../../../middleware/dataLoader'
 
 async function handler(req: PayloadRequest, res: Response) {
   const global = req.query.global as string;
   const id = req.query.id as string;
   const depth = isNumber(req?.query?.depth) ? Number(req.query.depth) : undefined;
-
-  console.log('global', req.query.global, req.query)
 
   switch (req.method) {
     case 'GET': {
@@ -52,10 +49,8 @@ export default withPayload(
     withFileUpload(
       convertPayloadJSONBody(
         i18nMiddleware(
-          initializePassport(
-            authenticate(
-              handler
-            )
+          withAuth(
+            handler
           )
         )
       )

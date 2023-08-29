@@ -3,8 +3,7 @@ import httpStatus from 'http-status'
 import { PayloadRequest } from 'payload/dist/types'
 import { docAccess } from 'payload/dist/globals/operations/docAccess'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
-import authenticate from '../../../middleware/authenticate'
-import initializePassport from '../../../middleware/initializePassport'
+import withAuth from '../../../middleware/authenticate'
 import withPayload from '../../../middleware/withPayload'
 import withDataLoader from '../../../middleware/dataLoader'
 
@@ -25,10 +24,8 @@ async function handler(req: PayloadRequest, res: Response) {
 
 export default withPayload(
   withDataLoader(
-    initializePassport(
-      authenticate(
-        handler
-      )
+    withAuth(
+      handler
     )
   )
 )
