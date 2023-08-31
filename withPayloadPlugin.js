@@ -63,6 +63,7 @@ const withPayload = async (config, paths) => {
       ...config.experimental,
       appDir: true,
       outputFileTracingExcludes,
+      outputFileTracingIgnores: outputFileTracingExcludes["**/*"],
     },
     webpack: (webpackConfig, webpackOptions) => {
       const incomingWebpackConfig =
