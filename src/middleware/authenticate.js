@@ -1,6 +1,7 @@
 const passport = require("passport");
 const AnonymousStrategy = require("passport-anonymous");
-const authenticate = require("payload/dist/express/middleware/authenticate").default;
+const authenticate =
+  require("payload/dist/express/middleware/authenticate").default;
 const jwtStrategy = require("payload/dist/auth/strategies/jwt").default;
 const apiKeyStrategy = require("payload/dist/auth/strategies/apiKey").default;
 

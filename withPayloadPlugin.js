@@ -1,8 +1,11 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
-const { getBaseConfig } = require("payload/dist/bundlers/webpack/configs/base");
+const {
+  getBaseConfig,
+} = require("@payloadcms/bundler-webpack/dist/configs/base");
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
+const mockNamedExportsPath = path.resolve(__dirname, "./mocks/emptyExports.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
@@ -23,28 +26,32 @@ const withPayload = async (config, paths) => {
     paths: {
       ...payloadConfig.paths,
       rawConfig: configPath,
-    }
-  }
+    },
+  };
   const payloadWebpackConfig = getBaseConfig(payloadConfig);
 
-  const configRequiresSharp = payloadConfig.collections.find(({ upload }) => {
-    if (typeof upload === "object" && upload !== null) {
-      if (upload.imageSizes || upload.resizeOptions || upload.formatOptions) {
-        return true;
+  const configRequiresSharp = Boolean(
+    payloadConfig.collections.find(({ upload }) => {
+      if (typeof upload === "object" && upload !== null) {
+        if (upload.imageSizes || upload.resizeOptions || upload.formatOptions) {
+          return true;
+        }
       }
-    }
-    return false;
-  });
+      return false;
+    })
+  );
 
   const outputFileTracingExcludes = {
     "**/*": [
       "node_modules/@swc/core-linux-x64-gnu",
       "node_modules/@swc/core-linux-x64-musl",
+      "node_modules/@swc/core-darwin-x64",
+      "node_modules/@swc/core",
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
-        config.experimental.outputFileTracingExcludes &&
-        config.experimental.outputFileTracingExcludes["**/*"]
+      config.experimental.outputFileTracingExcludes &&
+      config.experimental.outputFileTracingExcludes["**/*"]
         ? config.experimental.outputFileTracingExcludes["**/*"]
         : []),
     ],
@@ -61,11 +68,10 @@ const withPayload = async (config, paths) => {
     ...config,
     experimental: {
       ...config.experimental,
-      appDir: true,
       outputFileTracingExcludes,
-      outputFileTracingIgnores: outputFileTracingExcludes["**/*"],
     },
     webpack: (webpackConfig, webpackOptions) => {
+      const { isServer } = webpackOptions;
       const incomingWebpackConfig =
         typeof config.webpack === "function"
           ? config.webpack(webpackConfig, webpackOptions)
@@ -80,6 +86,19 @@ const withPayload = async (config, paths) => {
         ],
       });
 
+      const aliases = {
+        ...incomingWebpackConfig.resolve.alias,
+        "@payloadcms/next-payload/getPayload":
+          payloadPath ||
+          path.resolve(process.cwd(), "./payload/payloadClient.ts"),
+        ...payloadWebpackConfig.resolve.alias,
+      };
+
+      if (!isServer) {
+        aliases["@payloadcms/db-mongodb"] = mockNamedExportsPath;
+        aliases["@payloadcms/db-postgres"] = mockNamedExportsPath;
+      }
+
       let newWebpackConfig = {
         ...incomingWebpackConfig,
         plugins: [
@@ -90,15 +109,7 @@ const withPayload = async (config, paths) => {
         ],
         resolve: {
           ...incomingWebpackConfig.resolve,
-          alias: {
-            ...incomingWebpackConfig.resolve.alias,
-            "@payloadcms/next-payload/getPayload":
-              payloadPath ||
-              path.resolve(process.cwd(), "./payload/payloadClient.ts"),
-            ...payloadWebpackConfig.resolve.alias,
-            // [path.resolve(process.cwd(), "./node_modules/payload/dist/bundlers/webpack/bundler.js")]: mockModulePath,
-            // ^ useful for development with `yarn link`
-          },
+          alias: aliases,
         },
       };
 

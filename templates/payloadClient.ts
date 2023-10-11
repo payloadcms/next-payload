@@ -1,8 +1,8 @@
 import { Payload, getPayload } from "payload/dist/payload";
 import config from './payload.config';
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('MONGODB_URI environment variable is missing')
+if (!process.env.DATABASE_URI) {
+  throw new Error('DATABASE_URI environment variable is missing')
 }
 
 if (!process.env.PAYLOAD_SECRET) {
@@ -33,7 +33,6 @@ export const getPayloadClient = async (): Promise<Payload> => {
   if (!cached.promise) {
     cached.promise = getPayload({
       // Make sure that your environment variables are filled out accordingly
-      mongoURL: process.env.MONGODB_URI as string,
       secret: process.env.PAYLOAD_SECRET as string,
       config: config,
     })

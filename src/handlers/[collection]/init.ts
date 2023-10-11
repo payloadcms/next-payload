@@ -13,8 +13,7 @@ async function handler(req: PayloadRequest, res: Response) {
     })
   }
 
-  const Model = req.payload.collections[collectionSlug].Model
-  const initialized = await initOperation({ req, Model })
+  const initialized = await initOperation({ req, collection: collectionSlug })
   return res.status(httpStatus.OK).json({ initialized })
 }
 

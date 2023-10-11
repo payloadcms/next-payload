@@ -20,6 +20,7 @@ async function handler(req: PayloadRequest, res: Response) {
 
   try {
     await verifyEmail({
+      req,
       collection: req.payload.collections[collectionSlug],
       token: token as string,
     });
