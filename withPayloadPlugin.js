@@ -25,8 +25,8 @@ const withPayload = async (config, paths) => {
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
-        config.experimental.outputFileTracingExcludes &&
-        config.experimental.outputFileTracingExcludes["**/*"]
+      config.experimental.outputFileTracingExcludes &&
+      config.experimental.outputFileTracingExcludes["**/*"]
         ? config.experimental.outputFileTracingExcludes["**/*"]
         : []),
     ],
@@ -43,11 +43,11 @@ const withPayload = async (config, paths) => {
     ...config,
     experimental: {
       ...config.experimental,
-      appDir: true,
       outputFileTracingExcludes,
-      serverComponentsExternalPackages: ["mongoose", "payload"],
     },
     webpack: (webpackConfig, webpackOptions) => {
+      const { isServer } = webpackOptions;
+
       const incomingWebpackConfig =
         typeof config.webpack === "function"
           ? config.webpack(webpackConfig, webpackOptions)
@@ -62,8 +62,42 @@ const withPayload = async (config, paths) => {
         ],
       });
 
+      const alias = {
+        ...incomingWebpackConfig.resolve.alias,
+        "@payloadcms/bundler-webpack": path.resolve(
+          __dirname,
+          "../bundler-webpack/dist/mocks/emptyModule.js"
+        ),
+        "@payloadcms/next-payload/getPayload":
+          payloadPath ||
+          path.resolve(process.cwd(), "./payload/payloadClient.ts"),
+        "payload-config": configPath,
+        payload$: mockModulePath,
+        "payload-user-css": cssPath || customCSSMockPath,
+      };
+
+      if (!isServer) {
+        alias["@payloadcms/db-postgres"] = path.resolve(
+          __dirname,
+          "./mocks/db-postgres.js"
+        );
+        alias["@payloadcms/db-mongodb"] = path.resolve(
+          __dirname,
+          "./mocks/db-mongodb.js"
+        );
+      }
+
       let newWebpackConfig = {
         ...incomingWebpackConfig,
+        externals: [
+          ...(incomingWebpackConfig.externals || []),
+          {
+            "@swc/core": "@swc/core",
+            "drizzle-kit": "drizzle-kit",
+            "drizzle-kit/utils": "drizzle-kit/utils",
+            "pg-native": "pg-native",
+          },
+        ],
         plugins: [
           ...(incomingWebpackConfig.plugins || []),
           new FilterWarningsPlugin({
@@ -72,15 +106,7 @@ const withPayload = async (config, paths) => {
         ],
         resolve: {
           ...incomingWebpackConfig.resolve,
-          alias: {
-            ...incomingWebpackConfig.resolve.alias,
-            "@payloadcms/next-payload/getPayload":
-              payloadPath ||
-              path.resolve(process.cwd(), "./payload/payloadClient.ts"),
-            "payload-config": configPath,
-            payload$: mockModulePath,
-            "payload-user-css": cssPath || customCSSMockPath,
-          },
+          alias,
         },
       };
 
@@ -98,7 +124,6 @@ const withPayload = async (config, paths) => {
       ...(config.transpilePackages || []),
       "@payloadcms/next-payload",
       "payload",
-      "mongoose",
     ],
     rewrites: async () => {
       let userRewrites = config.rewrites;
