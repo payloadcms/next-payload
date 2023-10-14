@@ -5,8 +5,7 @@ import logout from 'payload/dist/auth/operations/logout'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import withPayload from '../../middleware/withPayload'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
-import initializePassport from '../../middleware/initializePassport'
-import authenticate from '../../middleware/authenticate'
+import withAuth from '../../middleware/authenticate'
 import withCookie from '../../middleware/cookie'
 
 async function handler(req: PayloadRequest, res: Response) {
@@ -34,11 +33,9 @@ async function handler(req: PayloadRequest, res: Response) {
 
 export default withPayload(
   convertPayloadJSONBody(
-    initializePassport(
-      authenticate(
-        withCookie(
-          handler
-        )
+    withAuth(
+      withCookie(
+        handler
       )
     )
   )

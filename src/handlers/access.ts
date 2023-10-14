@@ -3,7 +3,6 @@ import httpStatus from 'http-status'
 import { PayloadRequest } from 'payload/dist/types'
 import access from 'payload/dist/auth/operations/access'
 import authenticate from '../middleware/authenticate'
-import initializePassport from '../middleware/initializePassport'
 import withPayload from '../middleware/withPayload'
 
 async function handler(req: PayloadRequest, res: Response) {
@@ -15,10 +14,8 @@ async function handler(req: PayloadRequest, res: Response) {
 }
 
 export default withPayload(
-  initializePassport(
-    authenticate(
-      handler
-    )
+  authenticate(
+    handler
   )
 )
 

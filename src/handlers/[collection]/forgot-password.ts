@@ -5,8 +5,10 @@ import forgotPassword from 'payload/dist/auth/operations/forgotPassword'
 import getErrorHandler from 'payload/dist/express/middleware/errorHandler'
 import withPayload from '../../middleware/withPayload'
 import convertPayloadJSONBody from '../../middleware/convertPayloadJSONBody'
-import fileUpload from '../../middleware/fileUpload'
-import i18n from '../../middleware/i18n'
+import cookies from '../../middleware/cookie'
+import withI18N from '../../middleware/i18n'
+import dataLoader from '../../middleware/dataLoader'
+import withFileUpload from '../../middleware/fileUpload'
 
 async function handler(req: PayloadRequest, res: Response) {
   const collectionSlug = req.query.collection as string;
@@ -39,10 +41,14 @@ async function handler(req: PayloadRequest, res: Response) {
 }
 
 export default withPayload(
-  fileUpload(
-    i18n(
-      convertPayloadJSONBody(
-        handler
+  dataLoader(
+    withFileUpload(
+      withI18N(
+        convertPayloadJSONBody(
+          cookies(
+            handler
+          )
+        )
       )
     )
   )

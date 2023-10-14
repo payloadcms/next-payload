@@ -1,27 +1,52 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const {
+  getBaseConfig,
+} = require("@payloadcms/bundler-webpack/dist/configs/base");
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
+const mockNamedExportsPath = path.resolve(__dirname, "./mocks/emptyExports.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
-  const { cssPath, payloadPath, configPath } = paths || {};
+  const {
+    cssPath,
+    payloadPath,
+    configPath,
+    adminRoute: adminRouteArg = "/admin",
+  } = paths || {};
 
-  const payloadConfig = await loadPayloadConfig(configPath);
+  let payloadConfig = await loadPayloadConfig(configPath);
+  payloadConfig = {
+    ...payloadConfig,
+    admin: {
+      ...payloadConfig.admin,
+      css: cssPath || customCSSMockPath,
+    },
+    paths: {
+      ...payloadConfig.paths,
+      rawConfig: configPath,
+    },
+  };
+  const payloadWebpackConfig = getBaseConfig(payloadConfig);
 
-  const configRequiresSharp = payloadConfig.collections.find(({ upload }) => {
-    if (typeof upload === "object" && upload !== null) {
-      if (upload.imageSizes || upload.resizeOptions || upload.formatOptions) {
-        return true;
+  const configRequiresSharp = Boolean(
+    payloadConfig.collections.find(({ upload }) => {
+      if (typeof upload === "object" && upload !== null) {
+        if (upload.imageSizes || upload.resizeOptions || upload.formatOptions) {
+          return true;
+        }
       }
-    }
-    return false;
-  });
+      return false;
+    })
+  );
 
   const outputFileTracingExcludes = {
     "**/*": [
       "node_modules/@swc/core-linux-x64-gnu",
       "node_modules/@swc/core-linux-x64-musl",
+      "node_modules/@swc/core-darwin-x64",
+      "node_modules/@swc/core",
       "node_modules/@swc/wasm",
       "node_modules/webpack/**/*",
       ...(config.experimental &&
@@ -132,9 +157,10 @@ const withPayload = async (config, paths) => {
         userRewrites = await config.rewrites();
       }
 
+      const adminRoute = adminRouteArg.split("/").filter(Boolean).join("/");
       const payloadAdminRewrite = {
-        source: "/admin/:path*",
-        destination: "/admin",
+        source: `/${adminRoute}/:path*`,
+        destination: `/${adminRoute}`,
       };
 
       if (Array.isArray(userRewrites)) {

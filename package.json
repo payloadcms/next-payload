@@ -1,7 +1,7 @@
 {
   "name": "@payloadcms/next-payload",
   "description": "Payload deployed as Vercel functions within a NextJS app",
-  "version": "0.0.31",
+  "version": "0.1.0",
   "license": "MIT",
   "author": {
     "email": "info@payloadcms.com",
@@ -34,14 +34,17 @@
     "*.js"
   ],
   "dependencies": {
+    "@payloadcms/bundler-webpack": "^1.0.2",
+    "@payloadcms/db-mongodb": "^1.0.3",
     "@swc/core": "^1.3.35",
     "@swc/register": "^0.1.10",
+    "payload": "^2.0.4",
     "qs": "^6.11.1",
     "sass": "^1.58.2",
     "webpack-filter-warnings-plugin": "^1.2.1"
   },
   "peerDependencies": {
-    "payload": "^1.7.1"
+    "@payloadcms/bundler-webpack": "^1.0.2"
   },
   "devDependencies": {
     "@swc/wasm": "^1.3.35",
@@ -50,7 +53,6 @@
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
     "next": "^13.1.2",
-    "payload": "^1.10.1",
     "typescript": "^4.8.4",
     "webpack-hot-middleware": "^2.25.3"
   }
