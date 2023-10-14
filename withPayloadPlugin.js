@@ -5,7 +5,6 @@ const {
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
-const mockNamedExportsPath = path.resolve(__dirname, "./mocks/emptyExports.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
 const withPayload = async (config, paths) => {
@@ -121,6 +120,7 @@ const withPayload = async (config, paths) => {
             "drizzle-kit": "drizzle-kit",
             "drizzle-kit/utils": "drizzle-kit/utils",
             "pg-native": "pg-native",
+            mongoose: "mongoose",
           },
         ],
         plugins: [
@@ -148,7 +148,6 @@ const withPayload = async (config, paths) => {
     transpilePackages: [
       ...(config.transpilePackages || []),
       "@payloadcms/next-payload",
-      "mongoose",
       "payload",
     ],
     rewrites: async () => {
