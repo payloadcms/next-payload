@@ -149,6 +149,8 @@ const withPayload = async (config, paths) => {
       ...(config.transpilePackages || []),
       "@payloadcms/next-payload",
       "payload",
+      "@payloadcms/richtext-slate",
+      "@payloadcms/richtext-lexical",
     ],
     rewrites: async () => {
       let userRewrites = config.rewrites;
