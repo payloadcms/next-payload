@@ -22,10 +22,10 @@ async function handler(req: PayloadRequest, res: Response) {
     const fallbackLocale = typeof req.query.fallbackLocale === 'string' ? req.query.fallbackLocale : undefined
 
     // Unfortunately,
-    // There is a route collision between /api/_preferences/[key].js
+    // There is a route collision between /api/payload-preferences/[key].js
     // and /api/[collection]/[id].js
     // so both need to be handled in this file for now
-    if (collectionSlug === '_preferences') {
+    if (collectionSlug === 'payload-preferences') {
       const key = typeof req.query.id === 'string' ? req.query.id : undefined;
 
       switch (req.method) {
