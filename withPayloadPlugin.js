@@ -1,7 +1,4 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
-const {
-  getBaseConfig,
-} = require("@payloadcms/bundler-webpack/dist/configs/base");
 const path = require("path");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
@@ -27,7 +24,6 @@ const withPayload = async (config, paths) => {
       rawConfig: configPath,
     },
   };
-  const payloadWebpackConfig = getBaseConfig(payloadConfig);
 
   const configRequiresSharp = Boolean(
     payloadConfig.collections.find(({ upload }) => {
@@ -88,8 +84,11 @@ const withPayload = async (config, paths) => {
         ],
       });
 
-      const alias = {
+      let alias = {
         ...incomingWebpackConfig.resolve.alias,
+        "payload-config": configPath,
+        payload$: mockModulePath,
+        "payload-user-css": cssPath || customCSSMockPath,
         "@payloadcms/bundler-webpack": path.resolve(
           __dirname,
           "../bundler-webpack/dist/mocks/emptyModule.js"
@@ -97,9 +96,6 @@ const withPayload = async (config, paths) => {
         "@payloadcms/next-payload/getPayload":
           payloadPath ||
           path.resolve(process.cwd(), "./payload/payloadClient.ts"),
-        "payload-config": configPath,
-        payload$: mockModulePath,
-        "payload-user-css": cssPath || customCSSMockPath,
       };
 
       if (!isServer) {
@@ -107,6 +103,7 @@ const withPayload = async (config, paths) => {
           __dirname,
           "./mocks/db-postgres.js"
         );
+
         alias["@payloadcms/db-mongodb"] = path.resolve(
           __dirname,
           "./mocks/db-mongodb.js"
@@ -141,7 +138,7 @@ const withPayload = async (config, paths) => {
         newWebpackConfig.resolve.alias.sharp = mockModulePath;
       }
 
-      if (typeof payloadConfig.admin.webpack === "function") {
+      if (typeof payloadConfig.admin.webpack === "function" && !isServer) {
         return payloadConfig.admin.webpack(newWebpackConfig);
       }
 
@@ -153,6 +150,7 @@ const withPayload = async (config, paths) => {
       "payload",
       "@payloadcms/richtext-slate",
       "@payloadcms/richtext-lexical",
+      "@payloadcms/plugin-cloud-storage",
     ],
     rewrites: async () => {
       let userRewrites = config.rewrites;
