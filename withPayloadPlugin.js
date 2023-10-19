@@ -4,6 +4,15 @@ const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
 
+async function checkFileExists(filePath) {
+  try {
+    await fs.access(filePath, fs.constants.F_OK);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 const withPayload = async (config, paths) => {
   const {
     cssPath,
@@ -13,11 +22,21 @@ const withPayload = async (config, paths) => {
   } = paths || {};
 
   let payloadConfig = await loadPayloadConfig(configPath);
+
+  const cssFileExists = cssPath && (await checkFileExists(cssPath));
+  const cssFilePath = cssFileExists ? cssPath : customCSSMockPath;
+
+  if (!cssFileExists) {
+    console.warn(
+      `WARNING(withPayload): Custom CSS file not found at ${cssPath}. Please update your next.config.js file.`
+    );
+  }
+
   payloadConfig = {
     ...payloadConfig,
     admin: {
       ...payloadConfig.admin,
-      css: cssPath || customCSSMockPath,
+      css: cssFilePath,
     },
     paths: {
       ...payloadConfig.paths,
@@ -87,8 +106,8 @@ const withPayload = async (config, paths) => {
       let alias = {
         ...incomingWebpackConfig.resolve.alias,
         "payload-config": configPath,
+        "payload-user-css": cssFilePath,
         payload$: mockModulePath,
-        "payload-user-css": cssPath || customCSSMockPath,
         "@payloadcms/bundler-webpack": path.resolve(
           __dirname,
           "../bundler-webpack/dist/mocks/emptyModule.js"
