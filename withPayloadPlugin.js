@@ -23,13 +23,16 @@ const withPayload = async (config, paths) => {
 
   let payloadConfig = await loadPayloadConfig(configPath);
 
-  const cssFileExists = cssPath && (await checkFileExists(cssPath));
-  const cssFilePath = cssFileExists ? cssPath : customCSSMockPath;
+  let cssFilePath = customCSSMockPath;
 
-  if (!cssFileExists) {
-    console.warn(
-      `WARNING(withPayload): Custom CSS file not found at ${cssPath}. Please update your next.config.js file.`
-    );
+  if (cssPath) {
+    if (await checkFileExists(cssPath)) {
+      cssFilePath = cssPath;
+    } else {
+      console.warn(
+        `WARNING(withPayload): Custom CSS file not found at ${cssPath}. Please update your next.config.js file.`
+      );
+    }
   }
 
   payloadConfig = {
