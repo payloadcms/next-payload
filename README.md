@@ -164,18 +164,8 @@ Using `yarn link` to develop this plugin locally is currently the best way to im
 #### Setting up the plugin for dev:
 1. Clone this repo
 2. `cd` into the folder you cloned this repo into and run `yarn`
-3. Then run `yarn link`
-4. Uncomment [this line](https://github.com/payloadcms/next-payload/blob/main/withPayloadPlugin.js#L98)
+3. In the same folder, run `./scripts/pack-next-payload.sh ../path/to/your/project` in your terminal
 
-#### Setting up a linked project:
-1. Clone the [next-payload-demo](https://github.com/payloadcms/next-payload-demo) repo 
-2. Follow the getting started section in the [next-payload-demo README](https://github.com/payloadcms/next-payload-demo#getting-started)
-3. `cd` into the folder you cloned the demo into and run `yarn link @payloadcms/next-payload`
-4. Run `yarn dev` and you should see the demo running on `localhost:3000`
+At this point your Next.js project will be using a locally built version of this plugin. You can make changes to the plugin and see them reflected in your project by re-running the command above. Note that this will change your `package.json` file to point to the local version of the plugin, so you'll need to revert that change before committing your code.
 
-#### Making changes to the plugin:
-1. Make your changes to the plugin and save
-2. Run `yarn build` in the plugin folder **(you NEED to do this to see your changes)**
-3. Refresh your browser and see the changes you made!
-
-If you run into any issues while developing, please open an issue in this repo so we can get it resolved. Thanks for contributing!
+If you run into any issues while developing, please open an issue in this repo so we can get it resolved. Thank you for contributing!
