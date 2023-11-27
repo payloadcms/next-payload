@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This package uses <strong>Payload 2.x</strong> when creating your payload.config.ts after running `yarn next-payload install` now. Read more in the <a target="_blank" href="https://payloadcms.com/blog/payload-2-0" rel="dofollow"><strong>2.x announcement post</strong></a>.
+
 # Next + Payload Serverless
 
 This package contains a set of utilities to allow Payload to be deployed seamlessly, serverless, within an existing NextJS project. It adds the Payload admin UI into the NextJS `/app` folder and adds all Payload endpoints into the `pages/api` folder.
@@ -7,9 +10,9 @@ To do so, this package exposes a few different helpers. To get started, follow t
 #### 1. Add this package and Payload to your project
 
 ```bash
-npm install @payloadcms/next-payload payload
+npm install @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
 # or
-yarn add @payloadcms/next-payload payload
+yarn add @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
 ```
 
 #### 2. Run the command to extend your Next app with Payload
@@ -24,7 +27,7 @@ yarn next-payload install
 
 ```env
 # mongo connection string
-MONGODB_URI=mongodb://127.0.0.1/create-next-app-serverless
+MONGODB_URI=mongodb://127.0.0.1/next-payload-demo
 # payload secret
 PAYLOAD_SECRET=SOME_SECRET
 # path to your payload.config file
@@ -49,7 +52,7 @@ module.exports = withPayload(
     // allows you to specify paths to your Payload dependencies
     // and configure the admin route to your Payload CMS.
 
-    // Point to your Payload config (Required)
+    // Point to your Payload config (required)
     configPath: path.resolve(__dirname, "./payload/payload.config.ts"),
 
     // Point to custom Payload CSS (optional)
@@ -134,7 +137,7 @@ export default buildConfig({
 
 #### 2. Rename the `admin` directory under `/app` to `dashboard`.
 
-#### 3. Set `adminRoute: "/dashboard",` in the Payload configuration in `next.config.js` as per the documentation above.
+#### 3. Set `adminRoute: "/dashboard",` in the `next.config.js` file the withPayload config options as per the documentation above.
 
 ## Known gotchas
 
