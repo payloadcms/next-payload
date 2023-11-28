@@ -22,7 +22,6 @@ yarn_pack_output=$(yarn pack)
 # Helper variables
 archive_file=$(echo "$yarn_pack_output" | grep -o '".*"' | awk -F '"' '{print $2}')
 filename=$(basename "$archive_file")
-echo "filename: $filename"
 
 # Move tgz into the destination directory
 mv "$archive_file" "$destination_directory"
