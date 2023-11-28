@@ -65,8 +65,6 @@ const withPayload = async (config, paths) => {
       "node_modules/@swc/core-darwin-x64",
       "node_modules/@swc/core",
       "node_modules/@swc/wasm",
-      "drizzle-kit",
-      "drizzle-kit/utils",
       ...(config.experimental &&
       config.experimental.outputFileTracingExcludes &&
       config.experimental.outputFileTracingExcludes["**/*"]
