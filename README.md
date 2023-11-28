@@ -10,9 +10,9 @@ To do so, this package exposes a few different helpers. To get started, follow t
 #### 1. Add this package and Payload to your project
 
 ```bash
-npm install @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
+npm install @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/db-mongodb @payloadcms/richtext-slate
 # or
-yarn add @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
+yarn add @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/db-mongodb @payloadcms/richtext-slate
 ```
 
 #### 2. Run the command to extend your Next app with Payload
