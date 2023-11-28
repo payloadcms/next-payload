@@ -159,7 +159,7 @@ If you don't want to go out and sign up for a separate file hosting service, you
 
 
 ## Developing this plugin
-Using `yarn link` to develop this plugin locally is currently the best way to implement new features or debug existing behavior. Here are the steps to get setup:
+Using `yarn pack` to develop this plugin locally is currently the best way to implement new features or debug existing behavior. Here are the steps to get setup:
 
 #### Setting up the plugin for dev:
 1. Clone this repo
