@@ -10,9 +10,9 @@ To do so, this package exposes a few different helpers. To get started, follow t
 #### 1. Add this package and Payload to your project
 
 ```bash
-npm install @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
+npm install @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/db-mongodb @payloadcms/richtext-slate
 # or
-yarn add @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/database-mongodb @payloadcms/richtext-slate
+yarn add @payloadcms/next-payload payload @payloadcms/bundler-webpack @payloadcms/db-mongodb @payloadcms/richtext-slate
 ```
 
 #### 2. Run the command to extend your Next app with Payload
@@ -159,12 +159,12 @@ If you don't want to go out and sign up for a separate file hosting service, you
 
 
 ## Developing this plugin
-Using `yarn link` to develop this plugin locally is currently the best way to implement new features or debug existing behavior. Here are the steps to get setup:
+Using `yarn pack` to develop this plugin locally is currently the best way to implement new features or debug existing behavior. Here are the steps to get setup:
 
 #### Setting up the plugin for dev:
 1. Clone this repo
 2. `cd` into the folder you cloned this repo into and run `yarn`
-3. In the same folder, run `./scripts/pack-next-payload.sh ../path/to/your/project` in your terminal
+3. In the same folder, run `./scripts/pack-next-payload.sh ../path/to/your/project` in your terminal (it will run [this script](https://github.com/payloadcms/next-payload/blob/main/scripts/pack-next-payload.sh))
 
 At this point your Next.js project will be using a locally built version of this plugin. You can make changes to the plugin and see them reflected in your project by re-running the command above. Note that this will change your `package.json` file to point to the local version of the plugin, so you'll need to revert that change before committing your code.
 
