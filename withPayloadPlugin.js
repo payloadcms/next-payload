@@ -1,5 +1,6 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 const path = require("path");
+const fs = require("fs/promises");
 const loadPayloadConfig = require("./loadPayloadConfig");
 const mockModulePath = path.resolve(__dirname, "./mocks/emptyModule.js");
 const customCSSMockPath = path.resolve(__dirname, "./mocks/custom.css");
