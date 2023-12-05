@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> This package uses <strong>Payload 2.x</strong> when creating your payload.config.ts after running `yarn next-payload install` now. Read more in the <a target="_blank" href="https://payloadcms.com/blog/payload-2-0" rel="dofollow"><strong>2.x announcement post</strong></a>.
+> This package only works with Next.js 13. The Payload team has attempted to troubleshoot why this package doesn't work with Next.js 14, but can't resolve the issues. Instead of continuing to focus on this package's compatibility with Next.js 14, we are going to prioritize work on moving Payload fully to Next.js—at which point, this package will no longer be relevant and everything will just work out of the box. If you would like to use this package in the meantime as we work to launching Payload + Next.js native support, you can do so as long as you are running Next.js 13.
 
 # Next + Payload Serverless
 
