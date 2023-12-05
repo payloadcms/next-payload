@@ -1,7 +1,7 @@
 const path = require("path");
-const swcRegister = require('@swc/register');
-const { getTsconfig } = require('get-tsconfig');
-const { clientFiles } = require('payload/dist/config/clientFiles');
+const swcRegister = require("@swc/register");
+const { getTsconfig } = require("get-tsconfig");
+const { clientFiles } = require("payload/dist/config/clientFiles");
 
 const tsConfig = getTsconfig();
 
@@ -29,7 +29,9 @@ const loadPayloadConfig = async (configPath) => {
     swcOptions.jsc.paths = tsConfig?.config?.compilerOptions?.paths;
 
     if (tsConfig?.config?.compilerOptions?.baseUrl) {
-      swcOptions.jsc.baseUrl = path.resolve(tsConfig.config.compilerOptions.baseUrl);
+      swcOptions.jsc.baseUrl = path.resolve(
+        tsConfig.config.compilerOptions.baseUrl
+      );
     }
   }
 

@@ -35,4 +35,4 @@ rm -rf "$(yarn cache dir)/.tmp/"*
 # Install the package
 yarn add ./$filename
 # Cleanup the archive file
-rm -rf ./$filename
+# rm -rf ./$filename

@@ -59,16 +59,17 @@ const withPayload = async (config, paths) => {
   );
 
   const outputFileTracingExcludes = {
-    "**/*": [
-      "node_modules/@swc/core-linux-x64-gnu",
-      "node_modules/@swc/core-linux-x64-musl",
-      "node_modules/@swc/core-darwin-x64",
-      "node_modules/@swc/core",
-      "node_modules/@swc/wasm",
+    "/api/**/*": [
+      "./node_modules/@swc/core-linux-x64-gnu",
+      "./node_modules/@swc/core-linux-x64-musl",
+      "./node_modules/@swc/core-darwin-x64",
+      "./node_modules/@swc/core",
+      "./node_modules/@swc/wasm",
+      "./node_modules/@payloadcms/bundler-webpack",
       ...(config.experimental &&
       config.experimental.outputFileTracingExcludes &&
-      config.experimental.outputFileTracingExcludes["**/*"]
-        ? config.experimental.outputFileTracingExcludes["**/*"]
+      config.experimental.outputFileTracingExcludes["/api/**/*"]
+        ? config.experimental.outputFileTracingExcludes["/api/**/*"]
         : []),
     ],
     ...(config.experimental && config.experimental.outputFileTracingExcludes
@@ -77,7 +78,7 @@ const withPayload = async (config, paths) => {
   };
 
   if (!configRequiresSharp) {
-    outputFileTracingExcludes["**/*"].push("node_modules/sharp/**/*");
+    outputFileTracingExcludes["/api/**/*"].push("./node_modules/sharp/**/*");
   }
 
   return {
@@ -86,6 +87,15 @@ const withPayload = async (config, paths) => {
       ...config.experimental,
       outputFileTracingExcludes,
     },
+    transpilePackages: [
+      ...(config.transpilePackages || []),
+      "@payloadcms/next-payload",
+      "payload",
+      "@payloadcms/richtext-slate",
+      "@payloadcms/richtext-lexical",
+      "@payloadcms/plugin-cloud-storage",
+      "@payloadcms/bundler-webpack",
+    ],
     webpack: (webpackConfig, webpackOptions) => {
       const { isServer } = webpackOptions;
 
@@ -110,7 +120,7 @@ const withPayload = async (config, paths) => {
         payload$: mockModulePath,
         "@payloadcms/bundler-webpack": path.resolve(
           __dirname,
-          "../bundler-webpack/dist/mocks/emptyModule.js"
+          "./mocks/bundler-webpack.js"
         ),
         "@payloadcms/next-payload/getPayload":
           payloadPath ||
@@ -163,14 +173,6 @@ const withPayload = async (config, paths) => {
 
       return newWebpackConfig;
     },
-    transpilePackages: [
-      ...(config.transpilePackages || []),
-      "@payloadcms/next-payload",
-      "payload",
-      "@payloadcms/richtext-slate",
-      "@payloadcms/richtext-lexical",
-      "@payloadcms/plugin-cloud-storage",
-    ],
     rewrites: async () => {
       let userRewrites = config.rewrites;
 
