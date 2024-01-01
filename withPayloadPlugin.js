@@ -124,6 +124,8 @@ const withPayload = async (config, paths) => {
         ),
         "@payloadcms/next-payload/getPayload":
           payloadPath ||
+          checkFileExists(path.resolve(process.cwd(), "./src/payload/payloadClient.ts")) ?
+          path.resolve(process.cwd(), "./src/payload/payloadClient.ts") :
           path.resolve(process.cwd(), "./payload/payloadClient.ts"),
       };
 
